@@ -1,0 +1,66 @@
+/* ============================================================
+   Hotel Booking Portal Global Styling
+   Color Palette:
+   - Primary Navy Blue: #003580, #0f2942, #081a2b
+   - Accent Light Blue: #006ce4, #0056b3, #ebf3ff
+   - Neutral Whites/Grays: #ffffff, #f8fafc, #f1f5f9, #cbd5e1, #64748b
+   - Semantic: Success (#059669, #ecfdf5), Error (#dc2626, #fef2f2)
+   ============================================================ */
+
+/* Global styles */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: #006ce4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Global Print Stylesheet */
+@media print {
+  app-navbar, app-footer, .no-print {
+    display: none !important;
+  }
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
