@@ -165,4 +165,71 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.numberOfNights").value(2))
                 .andExpect(jsonPath("$.totalAmount").value(10000));
     }
+
+    @Test
+    @DisplayName("POST /api/bookings/lookup - Secure lookup returns 200 OK with session token")
+    void testLookupBookingSuccess() throws Exception {
+        String ref = "THB-20261124-ABC123";
+        String email = "john@example.com";
+
+        com.hotelbooking.dto.BookingLookupRequestDto request =
+                new com.hotelbooking.dto.BookingLookupRequestDto(ref, email);
+
+        com.hotelbooking.dto.BookingDataDto data = new com.hotelbooking.dto.BookingDataDto();
+        data.setBookingReference(ref);
+        data.setGuestEmail(email);
+        data.setGuestName("John Doe");
+        data.setBookingStatus(BookingStatus.CONFIRMED);
+
+        com.hotelbooking.dto.BookingLookupResponseDto response =
+                new com.hotelbooking.dto.BookingLookupResponseDto("Booking details retrieved successfully", data, "session-token-xyz");
+
+        when(bookingService.lookupBooking(any(), any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/bookings/lookup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Booking details retrieved successfully"))
+                .andExpect(jsonPath("$.data.bookingReference").value(ref))
+                .andExpect(jsonPath("$.verificationToken").value("session-token-xyz"));
+    }
+
+    @Test
+    @DisplayName("POST /api/bookings/lookup - Invalid reference regex format returns 400 Bad Request")
+    void testLookupBookingInvalidReferenceFormat() throws Exception {
+        com.hotelbooking.dto.BookingLookupRequestDto request =
+                new com.hotelbooking.dto.BookingLookupRequestDto("INVALID-FORMAT", "john@example.com");
+
+        mockMvc.perform(post("/api/bookings/lookup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
+    @DisplayName("POST /api/bookings/cancel - Secure cancel returns 200 OK")
+    void testSecureCancelBookingSuccess() throws Exception {
+        String ref = "THB-20261124-ABC123";
+        String email = "john@example.com";
+        String token = "valid-token-12345";
+
+        com.hotelbooking.dto.SecureCancelBookingRequestDto request =
+                new com.hotelbooking.dto.SecureCancelBookingRequestDto(ref, email, token);
+
+        com.hotelbooking.dto.BookingDataDto data = new com.hotelbooking.dto.BookingDataDto();
+        data.setBookingReference(ref);
+        data.setGuestEmail(email);
+        data.setBookingStatus(BookingStatus.CANCELLED);
+
+        when(bookingService.secureCancelBooking(any(), any())).thenReturn(data);
+
+        mockMvc.perform(post("/api/bookings/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookingReference").value(ref))
+                .andExpect(jsonPath("$.bookingStatus").value("CANCELLED"));
+    }
 }

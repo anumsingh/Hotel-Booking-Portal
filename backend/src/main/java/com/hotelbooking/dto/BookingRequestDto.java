@@ -3,23 +3,29 @@ package com.hotelbooking.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class BookingRequestDto {
 
     @NotNull(message = "Hotel ID is required")
+    @Positive(message = "Hotel ID must be a positive integer")
     private Long hotelId;
 
     @NotNull(message = "Room Type ID is required")
+    @Positive(message = "Room Type ID must be a positive integer")
     private Long roomTypeId;
 
     @NotBlank(message = "Guest name is required")
-    @Size(min = 2, max = 100, message = "Guest name must be between 2 and 100 characters")
+    @Size(min = 2, max = 80, message = "Guest name must be between 2 and 80 characters")
+    @Pattern(regexp = "^[a-zA-Z\\s.'\\-]+$", message = "Guest name contains invalid characters")
     private String guestName;
 
     @NotBlank(message = "Guest email is required")
     @Email(message = "Please provide a valid email address")
+    @Size(max = 120, message = "Email address cannot exceed 120 characters")
     private String guestEmail;
 
     @NotNull(message = "Check-in date is required")

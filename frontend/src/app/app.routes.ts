@@ -11,7 +11,9 @@ export const routes: Routes = [
   { path: 'hotels', component: HotelListComponent, title: 'Explore Hotels - Hotel Booking Portal' },
   { path: 'hotels/:id', component: HotelDetailComponent, title: 'Hotel Details - Hotel Booking Portal' },
   { path: 'booking', component: BookingFormComponent, title: 'Confirm Reservation - Hotel Booking Portal' },
-  { path: 'confirmation/:reference', component: BookingConfirmationComponent, title: 'Booking Confirmed - Hotel Booking Portal' },
+  // Clean confirmation route: uses in-memory router navigation state instead of leaking references in URL
+  { path: 'confirmation', component: BookingConfirmationComponent, title: 'Booking Confirmed - Hotel Booking Portal' },
+  // Clean my-bookings route: requires POST lookup form submission, no query parameter credential leakage
   { path: 'my-bookings', component: MyBookingsComponent, title: 'My Bookings - Hotel Booking Portal' },
   { path: '**', redirectTo: '' }
 ];

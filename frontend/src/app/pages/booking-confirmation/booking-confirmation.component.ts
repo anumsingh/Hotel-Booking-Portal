@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BookingService } from '../../services/booking.service';
+import { Router, RouterModule } from '@angular/router';
 import { BookingResponse } from '../../models/booking.model';
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 
@@ -114,8 +113,8 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               Download / Print Confirmation
             </button>
 
-            <a [routerLink]="['/my-bookings']" [queryParams]="{reference: booking.bookingReference, email: booking.guestEmail}" class="btn-action btn-retrieve">
-              View Booking Details
+            <a routerLink="/my-bookings" class="btn-action btn-retrieve">
+              View in My Bookings
             </a>
 
             <a routerLink="/" class="btn-action btn-home-link">
@@ -341,39 +340,20 @@ export class BookingConfirmationComponent implements OnInit {
   errorMessage = '';
 
   constructor(
-    private route: ActivatedRoute,
-    private bookingService: BookingService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const reference = params['reference'];
-      this.route.queryParams.subscribe(qParams => {
-        const email = qParams['email'];
-        if (reference && email) {
-          this.fetchBooking(reference, email);
-        } else {
-          this.errorMessage = 'Booking reference or guest email missing from confirmation request.';
-          this.loading = false;
-        }
-      });
-    });
-  }
-
-  fetchBooking(reference: string, email: string): void {
-    this.loading = true;
-    this.errorMessage = '';
-
-    this.bookingService.getBooking(reference, email).subscribe({
-      next: (data) => {
-        this.booking = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.message || 'Unable to retrieve confirmed booking record.';
-        this.loading = false;
-      }
-    });
+    // Read booking strictly from in-memory Router navigation state
+    // Prevents sensitive booking reference and guest email exposure in URLs, browser history, or logs
+    const state = history.state;
+    if (state && state.booking) {
+      this.booking = state.booking;
+      this.loading = false;
+    } else {
+      this.loading = false;
+      this.errorMessage = 'No active booking found in memory. Please enter your reference in My Bookings to retrieve your details.';
+    }
   }
 
   printConfirmation(): void {

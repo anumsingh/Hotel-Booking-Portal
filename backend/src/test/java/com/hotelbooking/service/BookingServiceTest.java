@@ -44,6 +44,12 @@ class BookingServiceTest {
     @Mock
     private RoomTypeRepository roomTypeRepository;
 
+    @Mock
+    private BookingVerificationService verificationService;
+
+    @Mock
+    private RateLimitingService rateLimitingService;
+
     @InjectMocks
     private BookingService bookingService;
 
@@ -211,5 +217,99 @@ class BookingServiceTest {
         assertThrows(InvalidBookingReferenceException.class, () ->
                 bookingService.getBookingByReferenceAndEmail(ref, email)
         );
+    }
+
+    @Test
+    @DisplayName("lookupBooking: Should return safe BookingData and issue verification token on valid credentials")
+    void testLookupBookingSuccess() {
+        String ref = "THB-20261124-ABC123";
+        String email = "john@example.com";
+        String clientIp = "127.0.0.1";
+
+        Booking confirmedBooking = new Booking(ref, "John Doe", email, sampleHotel, sampleRoomType,
+                LocalDate.now().plusDays(2), LocalDate.now().plusDays(5), 3,
+                BigDecimal.valueOf(5000), BigDecimal.valueOf(15000), BookingStatus.CONFIRMED);
+
+        when(bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(ref, email))
+                .thenReturn(Optional.of(confirmedBooking));
+        when(verificationService.createSession(ref, email))
+                .thenReturn("mock-token-12345");
+
+        com.hotelbooking.dto.BookingLookupRequestDto request = new com.hotelbooking.dto.BookingLookupRequestDto(ref, email);
+        com.hotelbooking.dto.BookingLookupResponseDto response = bookingService.lookupBooking(request, clientIp);
+
+        assertNotNull(response);
+        assertEquals("Booking details retrieved successfully", response.getMessage());
+        assertEquals(ref, response.getData().getBookingReference());
+        assertEquals("mock-token-12345", response.getVerificationToken());
+        verify(rateLimitingService).checkRateLimit(eq(clientIp), eq("booking-lookup"), anyInt(), anyLong());
+        verify(rateLimitingService).recordSuccess(clientIp, "booking-lookup");
+    }
+
+    @Test
+    @DisplayName("lookupBooking: Should reject non-matching credentials with generic error and record failure")
+    void testLookupBookingMismatchFails() {
+        String ref = "THB-20261124-ABC123";
+        String email = "wrong@example.com";
+        String clientIp = "127.0.0.1";
+
+        when(bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(ref, email))
+                .thenReturn(Optional.empty());
+
+        com.hotelbooking.dto.BookingLookupRequestDto request = new com.hotelbooking.dto.BookingLookupRequestDto(ref, email);
+
+        InvalidBookingReferenceException ex = assertThrows(InvalidBookingReferenceException.class, () ->
+                bookingService.lookupBooking(request, clientIp)
+        );
+        assertEquals("Unable to retrieve booking with the provided details.", ex.getMessage());
+        verify(rateLimitingService).recordFailure(eq(clientIp), eq("booking-lookup"), eq(5), eq(300L));
+    }
+
+    @Test
+    @DisplayName("secureCancelBooking: Should cancel and invalidate token when session token is valid")
+    void testSecureCancelBookingSuccess() {
+        String ref = "THB-20261124-ABC123";
+        String email = "john@example.com";
+        String token = "valid-token-xyz";
+        String clientIp = "127.0.0.1";
+
+        Booking confirmedBooking = new Booking(ref, "John Doe", email, sampleHotel, sampleRoomType,
+                LocalDate.now().plusDays(2), LocalDate.now().plusDays(5), 3,
+                BigDecimal.valueOf(5000), BigDecimal.valueOf(15000), BookingStatus.CONFIRMED);
+
+        when(verificationService.validateSession(token, ref, email)).thenReturn(true);
+        when(bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(ref, email))
+                .thenReturn(Optional.of(confirmedBooking));
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(i -> i.getArgument(0));
+
+        com.hotelbooking.dto.SecureCancelBookingRequestDto request =
+                new com.hotelbooking.dto.SecureCancelBookingRequestDto(ref, email, token);
+
+        com.hotelbooking.dto.BookingDataDto cancelledDto = bookingService.secureCancelBooking(request, clientIp);
+
+        assertNotNull(cancelledDto);
+        assertEquals(BookingStatus.CANCELLED, cancelledDto.getBookingStatus());
+        verify(verificationService).invalidateSession(token);
+        verify(rateLimitingService).recordSuccess(clientIp, "booking-cancel");
+    }
+
+    @Test
+    @DisplayName("secureCancelBooking: Should reject cancellation when verification session is expired or invalid")
+    void testSecureCancelBookingInvalidTokenFails() {
+        String ref = "THB-20261124-ABC123";
+        String email = "john@example.com";
+        String token = "expired-token";
+        String clientIp = "127.0.0.1";
+
+        when(verificationService.validateSession(token, ref, email)).thenReturn(false);
+
+        com.hotelbooking.dto.SecureCancelBookingRequestDto request =
+                new com.hotelbooking.dto.SecureCancelBookingRequestDto(ref, email, token);
+
+        BookingCancellationException ex = assertThrows(BookingCancellationException.class, () ->
+                bookingService.secureCancelBooking(request, clientIp)
+        );
+        assertTrue(ex.getMessage().contains("Verification session has expired or is invalid"));
+        verify(bookingRepository, never()).save(any(Booking.class));
     }
 }

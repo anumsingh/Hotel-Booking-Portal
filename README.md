@@ -159,6 +159,12 @@ SHOW TABLES;
 SELECT id, name, location FROM hotels;
 ```
 
+4. **Security Hardening**: Provision the dedicated least-privilege application user (avoid running as MySQL `root`):
+```powershell
+mysql -u root -p < "c:\My Projects\Thomos Hotel Booking\database\create_app_user.sql"
+```
+*Creates `hotel_app_user@localhost` with strictly `SELECT, INSERT, UPDATE, DELETE` permissions on `hotel_booking_db.*`.*
+
 ---
 
 ## 8. Backend Setup Instructions
@@ -295,21 +301,57 @@ npm start
 }
 ```
 
-#### 7. Retrieve Booking
-- **GET** `/api/bookings/{reference}?email=guest@example.com`
-- **Response**: `200 OK` | `404 NOT FOUND`
-
-#### 8. Cancel Booking
-- **PUT** `/api/bookings/{reference}/cancel`
+#### 7. Secure Booking Lookup (Zero URL Credential Exposure)
+- **POST** `/api/bookings/lookup`
+- **Security**: Transmits credentials in encrypted request body (HTTPS). Strips internal database IDs. Protected by sliding-window rate limiting.
 - **Request Body**:
 ```json
 {
-  "email": "rajesh.sharma@example.com"
+  "bookingReference": "THB-20261124-8517D9",
+  "email": "pooja.hegde@example.com"
 }
 ```
-- **Response**: `200 OK` (updated booking status: `CANCELLED`)
+- **Response**: `200 OK`
+```json
+{
+  "message": "Booking details retrieved successfully",
+  "data": {
+    "bookingReference": "THB-20261124-8517D9",
+    "guestName": "Pooja Hegde",
+    "guestEmail": "pooja.hegde@example.com",
+    "hotelName": "Grand Palace Hotel",
+    "hotelLocation": "Mumbai",
+    "roomName": "Luxury Heritage Suite",
+    "checkInDate": "2026-12-18",
+    "checkOutDate": "2026-12-21",
+    "numberOfNights": 3,
+    "pricePerNight": 5500.00,
+    "totalAmount": 16500.00,
+    "bookingStatus": "CONFIRMED",
+    "createdAt": "2026-11-24T18:00:00"
+  },
+  "verificationToken": "d5033b7810a5aeff710a9cf2961e05d9..."
+}
+```
 
-#### 9. Stay Cost Estimate
+#### 8. Secure Reservation Cancellation (Token-Authorized)
+- **POST** `/api/bookings/cancel`
+- **Security**: Requires active 15-minute verification session token issued during lookup. Rejects expired or mismatched tokens. Single-use invalidation.
+- **Request Body**:
+```json
+{
+  "bookingReference": "THB-20261124-8517D9",
+  "email": "pooja.hegde@example.com",
+  "verificationToken": "d5033b7810a5aeff710a9cf2961e05d9..."
+}
+```
+- **Response**: `200 OK` (bookingStatus updated to `CANCELLED`, room inventory released immediately)
+
+#### 9. Legacy Retrieval & Cancellation (Backward Compatibility)
+- **GET** `/api/bookings/{reference}?email=guest@example.com`
+- **PUT** `/api/bookings/{reference}/cancel`
+
+#### 10. Stay Cost Estimate
 - **POST** `/api/bookings/estimate`
 - **Request Body**:
 ```json

@@ -548,8 +548,9 @@ export class BookingFormComponent implements OnInit {
     this.bookingService.createBooking(payload).subscribe({
       next: (bookingResponse) => {
         this.submitting = false;
-        this.router.navigate(['/confirmation', bookingResponse.bookingReference], {
-          queryParams: { email: bookingResponse.guestEmail }
+        this.guestForm.reset();
+        this.router.navigate(['/confirmation'], {
+          state: { booking: bookingResponse }
         });
       },
       error: (err) => {

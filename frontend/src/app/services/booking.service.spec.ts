@@ -98,4 +98,47 @@ describe('BookingService', () => {
       bookingStatus: 'CANCELLED'
     });
   });
+
+  it('should securely look up booking via POST /lookup without URL parameters', () => {
+    service.lookupBooking({ bookingReference: 'THB-20261124-ABC123', email: 'guest@example.com' }).subscribe(res => {
+      expect(res.message).toBe('Booking details retrieved successfully');
+      expect(res.verificationToken).toBe('mock-token-xyz');
+      expect(res.data.bookingReference).toBe('THB-20261124-ABC123');
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bookings/lookup`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ bookingReference: 'THB-20261124-ABC123', email: 'guest@example.com' });
+    req.flush({
+      message: 'Booking details retrieved successfully',
+      verificationToken: 'mock-token-xyz',
+      data: {
+        bookingReference: 'THB-20261124-ABC123',
+        guestName: 'Guest',
+        bookingStatus: 'CONFIRMED'
+      }
+    });
+  });
+
+  it('should securely cancel booking via POST /cancel with verification token', () => {
+    service.secureCancelBooking({
+      bookingReference: 'THB-20261124-ABC123',
+      email: 'guest@example.com',
+      verificationToken: 'token-123'
+    }).subscribe(res => {
+      expect(res.bookingStatus).toBe('CANCELLED');
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bookings/cancel`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      bookingReference: 'THB-20261124-ABC123',
+      email: 'guest@example.com',
+      verificationToken: 'token-123'
+    });
+    req.flush({
+      bookingReference: 'THB-20261124-ABC123',
+      bookingStatus: 'CANCELLED'
+    });
+  });
 });

@@ -1,9 +1,13 @@
 package com.hotelbooking.service;
 
+import com.hotelbooking.dto.BookingDataDto;
+import com.hotelbooking.dto.BookingLookupRequestDto;
+import com.hotelbooking.dto.BookingLookupResponseDto;
 import com.hotelbooking.dto.BookingRequestDto;
 import com.hotelbooking.dto.BookingResponseDto;
 import com.hotelbooking.dto.EstimateRequestDto;
 import com.hotelbooking.dto.EstimateResponseDto;
+import com.hotelbooking.dto.SecureCancelBookingRequestDto;
 import com.hotelbooking.entity.Booking;
 import com.hotelbooking.entity.BookingStatus;
 import com.hotelbooking.entity.Hotel;
@@ -16,28 +20,40 @@ import com.hotelbooking.exception.RoomUnavailableException;
 import com.hotelbooking.repository.BookingRepository;
 import com.hotelbooking.repository.HotelRepository;
 import com.hotelbooking.repository.RoomTypeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 @Service
 public class BookingService {
 
+    private static final Logger log = LoggerFactory.getLogger(BookingService.class);
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final String ALPHANUMERIC = "0123456789ABCDEF";
+
     private final BookingRepository bookingRepository;
     private final HotelRepository hotelRepository;
     private final RoomTypeRepository roomTypeRepository;
+    private final BookingVerificationService verificationService;
+    private final RateLimitingService rateLimitingService;
 
     public BookingService(BookingRepository bookingRepository,
                           HotelRepository hotelRepository,
-                          RoomTypeRepository roomTypeRepository) {
+                          RoomTypeRepository roomTypeRepository,
+                          BookingVerificationService verificationService,
+                          RateLimitingService rateLimitingService) {
         this.bookingRepository = bookingRepository;
         this.hotelRepository = hotelRepository;
         this.roomTypeRepository = roomTypeRepository;
+        this.verificationService = verificationService;
+        this.rateLimitingService = rateLimitingService;
     }
 
     public void validateDates(LocalDate checkIn, LocalDate checkOut) {
@@ -92,8 +108,7 @@ public class BookingService {
 
     /**
      * Creates a new booking within a single atomic database transaction.
-     * Uses PESSIMISTIC_WRITE lock on RoomType to prevent simultaneous overbooking
-     * when multiple users attempt to reserve the last available room concurrently.
+     * Uses PESSIMISTIC_WRITE lock on RoomType to prevent simultaneous overbooking.
      */
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto request) {
@@ -129,7 +144,7 @@ public class BookingService {
         int nights = (int) ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
         BigDecimal totalAmount = roomType.getPricePerNight().multiply(BigDecimal.valueOf(nights));
 
-        // 4. Generate unique business booking reference
+        // 4. Generate cryptographically secure unique business booking reference
         String uniqueRef = generateBookingReference();
 
         // 5. Create and persist booking record
@@ -148,46 +163,116 @@ public class BookingService {
         );
 
         Booking savedBooking = bookingRepository.save(booking);
-
         return mapToBookingResponseDto(savedBooking);
     }
 
+    /**
+     * Secure booking lookup via POST /api/bookings/lookup.
+     * Validates both booking reference and guest email.
+     * Returns a generic safe error on mismatch to prevent user enumeration.
+     * Issues a short-lived cryptographic verification token for subsequent sensitive operations.
+     */
+    @Transactional(readOnly = true)
+    public BookingLookupResponseDto lookupBooking(BookingLookupRequestDto request, String clientIp) {
+        // Enforce rate limiting per client IP (15 requests / 60 seconds)
+        rateLimitingService.checkRateLimit(clientIp, "booking-lookup", 15, 60);
+
+        String ref = request.getBookingReference().trim();
+        String email = request.getEmail().trim().toLowerCase();
+
+        Booking booking = bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(ref, email)
+                .orElse(null);
+
+        if (booking == null) {
+            // Track failure for brute-force lockout (5 consecutive failures = 5 minute cooldown)
+            rateLimitingService.recordFailure(clientIp, "booking-lookup", 5, 300);
+            throw new InvalidBookingReferenceException("Unable to retrieve booking with the provided details.");
+        }
+
+        // Record successful attempt to reset consecutive failure counters
+        rateLimitingService.recordSuccess(clientIp, "booking-lookup");
+
+        // Issue server-side short-lived verification session
+        String verificationToken = verificationService.createSession(booking.getBookingReference(), booking.getGuestEmail());
+
+        BookingDataDto data = mapToBookingDataDto(booking);
+        return new BookingLookupResponseDto("Booking details retrieved successfully", data, verificationToken);
+    }
+
+    /**
+     * Secure cancellation via POST /api/bookings/cancel.
+     * Requires booking reference, matching guest email, and a valid short-lived verification token.
+     */
+    @Transactional
+    public BookingDataDto secureCancelBooking(SecureCancelBookingRequestDto request, String clientIp) {
+        // Enforce rate limiting per client IP (10 requests / 60 seconds)
+        rateLimitingService.checkRateLimit(clientIp, "booking-cancel", 10, 60);
+
+        String ref = request.getBookingReference().trim();
+        String email = request.getEmail().trim().toLowerCase();
+        String token = request.getVerificationToken();
+
+        // 1. Verify session ownership and validity
+        boolean isSessionValid = verificationService.validateSession(token, ref, email);
+        if (!isSessionValid) {
+            rateLimitingService.recordFailure(clientIp, "booking-cancel", 5, 300);
+            throw new BookingCancellationException("Verification session has expired or is invalid. Please retrieve your booking again.");
+        }
+
+        // 2. Retrieve booking from repository
+        Booking booking = bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(ref, email)
+                .orElseThrow(() -> new InvalidBookingReferenceException("Unable to process cancellation with the provided details."));
+
+        // 3. Reject double cancellation
+        if (booking.getBookingStatus() == BookingStatus.CANCELLED) {
+            throw new BookingCancellationException("Booking is already cancelled.");
+        }
+
+        // 4. Update status and save (releases inventory in overlap availability check)
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        Booking updatedBooking = bookingRepository.save(booking);
+
+        // 5. Invalidate single-use verification session
+        verificationService.invalidateSession(token);
+        rateLimitingService.recordSuccess(clientIp, "booking-cancel");
+
+        return mapToBookingDataDto(updatedBooking);
+    }
+
+    /**
+     * Legacy retrieve method preserved for internal/test compatibility.
+     * Uses generic error message on mismatch to prevent information leakage.
+     */
     @Transactional(readOnly = true)
     public BookingResponseDto getBookingByReferenceAndEmail(String reference, String email) {
         if (reference == null || reference.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-            throw new InvalidBookingReferenceException("Booking reference and guest email are both required.");
+            throw new InvalidBookingReferenceException("Unable to retrieve booking with the provided details.");
         }
 
         Booking booking = bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(
                 reference.trim(),
                 email.trim().toLowerCase()
-        ).orElseThrow(() -> new InvalidBookingReferenceException(
-                "No booking found matching reference '" + reference.trim() + "' and email '" + email.trim() + "'."
-        ));
+        ).orElseThrow(() -> new InvalidBookingReferenceException("Unable to retrieve booking with the provided details."));
 
         return mapToBookingResponseDto(booking);
     }
 
     /**
-     * Cancels an active CONFIRMED booking.
-     * Releases reserved room capacity immediately for other guests.
-     * Prevents repeated cancellations.
+     * Legacy cancellation method preserved for backward compatibility.
      */
     @Transactional
     public BookingResponseDto cancelBooking(String reference, String email) {
         if (reference == null || reference.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-            throw new InvalidBookingReferenceException("Booking reference and guest email are required for cancellation.");
+            throw new InvalidBookingReferenceException("Unable to retrieve booking with the provided details.");
         }
 
         Booking booking = bookingRepository.findByBookingReferenceAndGuestEmailIgnoreCase(
                 reference.trim(),
                 email.trim().toLowerCase()
-        ).orElseThrow(() -> new InvalidBookingReferenceException(
-                "No active booking found matching reference '" + reference.trim() + "' and email '" + email.trim() + "'."
-        ));
+        ).orElseThrow(() -> new InvalidBookingReferenceException("Unable to retrieve booking with the provided details."));
 
         if (booking.getBookingStatus() == BookingStatus.CANCELLED) {
-            throw new BookingCancellationException("Booking '" + reference.trim() + "' is already cancelled.");
+            throw new BookingCancellationException("Booking is already cancelled.");
         }
 
         booking.setBookingStatus(BookingStatus.CANCELLED);
@@ -196,10 +281,35 @@ public class BookingService {
         return mapToBookingResponseDto(updatedBooking);
     }
 
+    /**
+     * Cryptographically secure booking reference generator.
+     * Format: THB-YYYYMMDD-XXXXXX using SecureRandom alphanumeric entropy.
+     */
     private String generateBookingReference() {
         String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
-        return "THB-" + datePart + "-" + randomPart;
+        StringBuilder sb = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            sb.append(ALPHANUMERIC.charAt(SECURE_RANDOM.nextInt(ALPHANUMERIC.length())));
+        }
+        return "THB-" + datePart + "-" + sb.toString();
+    }
+
+    private BookingDataDto mapToBookingDataDto(Booking booking) {
+        BookingDataDto dto = new BookingDataDto();
+        dto.setBookingReference(booking.getBookingReference());
+        dto.setGuestName(booking.getGuestName());
+        dto.setGuestEmail(booking.getGuestEmail());
+        dto.setHotelName(booking.getHotel().getName());
+        dto.setHotelLocation(booking.getHotel().getLocation());
+        dto.setRoomName(booking.getRoomType().getRoomName());
+        dto.setCheckInDate(booking.getCheckInDate());
+        dto.setCheckOutDate(booking.getCheckOutDate());
+        dto.setNumberOfNights(booking.getNumberOfNights());
+        dto.setPricePerNight(booking.getPricePerNight());
+        dto.setTotalAmount(booking.getTotalAmount());
+        dto.setBookingStatus(booking.getBookingStatus());
+        dto.setCreatedAt(booking.getCreatedAt());
+        return dto;
     }
 
     private BookingResponseDto mapToBookingResponseDto(Booking booking) {

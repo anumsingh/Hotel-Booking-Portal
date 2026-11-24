@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
-import { BookingResponse } from '../../models/booking.model';
+import { BookingData } from '../../models/booking.model';
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 
 @Component({
@@ -37,7 +37,8 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                   [class.is-invalid]="retrieveForm.get('reference')?.invalid && retrieveForm.get('reference')?.touched"
                 />
                 <div *ngIf="retrieveForm.get('reference')?.invalid && retrieveForm.get('reference')?.touched" class="field-error">
-                  Booking reference is required.
+                  <span *ngIf="retrieveForm.get('reference')?.errors?.['required']">Booking reference is required.</span>
+                  <span *ngIf="retrieveForm.get('reference')?.errors?.['pattern']">Expected format: THB-YYYYMMDD-XXXXXX.</span>
                 </div>
               </div>
 
@@ -534,9 +535,10 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
   `]
 })
-export class MyBookingsComponent implements OnInit {
+export class MyBookingsComponent implements OnInit, OnDestroy {
   retrieveForm!: FormGroup;
-  booking: BookingResponse | null = null;
+  booking: BookingData | null = null;
+  verificationToken: string | null = null;
   loading = false;
   errorMessage = '';
   cancelSuccessMessage = '';
@@ -546,24 +548,25 @@ export class MyBookingsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private bookingService: BookingService,
-    private route: ActivatedRoute
+    private bookingService: BookingService
   ) {}
 
   ngOnInit(): void {
+    // Collect credentials via Angular Reactive Form only
+    // Eliminates all URL parameters, query parameters, and browser history leakage
     this.retrieveForm = this.fb.group({
-      reference: ['', Validators.required],
+      reference: ['', [Validators.required, Validators.pattern(/^THB-\d{8}-[A-F0-9]{6}$/)]],
       email: ['', [Validators.required, Validators.email]]
     });
+  }
 
-    this.route.queryParams.subscribe(params => {
-      const ref = params['reference'];
-      const email = params['email'];
-      if (ref && email) {
-        this.retrieveForm.patchValue({ reference: ref, email });
-        this.onRetrieveBooking();
-      }
-    });
+  ngOnDestroy(): void {
+    // Avoid retaining sensitive booking tokens and credentials in application memory
+    this.verificationToken = null;
+    this.booking = null;
+    if (this.retrieveForm) {
+      this.retrieveForm.reset();
+    }
   }
 
   onRetrieveBooking(): void {
@@ -576,16 +579,24 @@ export class MyBookingsComponent implements OnInit {
     this.errorMessage = '';
     this.cancelSuccessMessage = '';
     this.booking = null;
+    this.verificationToken = null;
 
     const { reference, email } = this.retrieveForm.value;
 
-    this.bookingService.getBooking(reference, email).subscribe({
+    // Secure POST retrieval: credentials sent encrypted in request body, not exposed in URL
+    this.bookingService.lookupBooking({
+      bookingReference: reference.trim().toUpperCase(),
+      email: email.trim().toLowerCase()
+    }).subscribe({
       next: (res) => {
-        this.booking = res;
+        this.booking = res.data;
+        this.verificationToken = res.verificationToken;
         this.loading = false;
+        // Clear sensitive input fields after successful processing to prevent screen peeking/caching
+        this.retrieveForm.reset();
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'No booking found matching the provided reference and email address.';
+        this.errorMessage = err.error?.message || 'Unable to retrieve booking with the provided details.';
         this.loading = false;
       }
     });
@@ -600,23 +611,34 @@ export class MyBookingsComponent implements OnInit {
   }
 
   confirmCancellation(): void {
-    if (!this.booking) return;
+    if (!this.booking || !this.verificationToken) {
+      this.errorMessage = 'Active verification session missing. Please look up your reservation again.';
+      this.showCancelModal = false;
+      return;
+    }
 
     this.cancelling = true;
     this.errorMessage = '';
     this.cancelSuccessMessage = '';
 
-    this.bookingService.cancelBooking(this.booking.bookingReference, this.booking.guestEmail).subscribe({
+    // Cancellation requires short-lived server-side verification session token
+    this.bookingService.secureCancelBooking({
+      bookingReference: this.booking.bookingReference,
+      email: this.booking.guestEmail,
+      verificationToken: this.verificationToken
+    }).subscribe({
       next: (updatedBooking) => {
         this.cancelling = false;
         this.showCancelModal = false;
         this.booking = updatedBooking;
-        this.cancelSuccessMessage = `Booking ${updatedBooking.bookingReference} has been successfully cancelled. Room availability has been released.`;
+        // Invalidate in-memory token once used
+        this.verificationToken = null;
+        this.cancelSuccessMessage = `Booking ${updatedBooking.bookingReference} has been successfully cancelled. Reserved room capacity has been released.`;
       },
       error: (err) => {
         this.cancelling = false;
         this.showCancelModal = false;
-        this.errorMessage = err.error?.message || 'Failed to cancel booking.';
+        this.errorMessage = err.error?.message || 'Failed to cancel booking. Verification session may have expired.';
       }
     });
   }
