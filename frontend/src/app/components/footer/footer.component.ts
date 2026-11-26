@@ -11,48 +11,47 @@ import { RouterModule } from '@angular/router';
       <div class="footer-container">
         <div class="footer-col about" id="about">
           <div class="footer-brand">
-            <span class="brand-text">Hotel<strong>Booking</strong></span>
-            <span class="brand-gold-tag">LUXURY COLLECTION</span>
+            <span class="brand-text">Hotel<strong>Booking</strong> Portal</span>
           </div>
           <p class="about-desc">
-            Your trusted portal for discovering hand-picked palace hotels, beachfront villas, 
-            and mountain sanctuaries. We make booking seamless, secure, and transparent with 
-            verified room availability and instant confirmations.
+            Your premier platform for discovering hand-picked luxury hotels and tranquil stays. 
+            We make booking seamless, secure, and completely transparent with verified hotel details 
+            and instant confirmations.
           </p>
           <div class="tech-badge">
-            Full-Stack Spring Boot 3 + Angular 19 + MySQL
+            Full-Stack Spring Boot 3 + Angular 17 + MySQL
           </div>
         </div>
 
         <div class="footer-col links">
-          <h4 class="col-title">Luxury Destinations</h4>
+          <h4 class="col-title">Quick Links</h4>
           <ul>
-            <li><a routerLink="/hotels" [queryParams]="{location: 'Udaipur'}">Palaces in Udaipur</a></li>
-            <li><a routerLink="/hotels" [queryParams]="{location: 'Goa'}">Beach Resorts in Goa</a></li>
-            <li><a routerLink="/hotels" [queryParams]="{location: 'Mumbai'}">Luxury Towers in Mumbai</a></li>
-            <li><a routerLink="/hotels" [queryParams]="{location: 'Manali'}">Himalayan Retreats in Manali</a></li>
-            <li><a routerLink="/hotels">Explore All Properties</a></li>
+            <li><a routerLink="/">Home</a></li>
+            <li><a routerLink="/hotels">Explore All Hotels</a></li>
+            <li><a routerLink="/my-bookings">Retrieve Booking</a></li>
+            <li><a routerLink="/hotels" [queryParams]="{location: 'Mumbai'}">Hotels in Mumbai</a></li>
+            <li><a routerLink="/hotels" [queryParams]="{location: 'Goa'}">Resorts in Goa</a></li>
           </ul>
         </div>
 
         <div class="footer-col contact" id="contact">
-          <h4 class="col-title">Concierge &amp; Support</h4>
+          <h4 class="col-title">Contact & Support</h4>
           <ul class="contact-list">
             <li>
               <span class="icon">📍</span>
-              <span>The Oberoi &amp; Taj Heritage District, Mumbai 400021</span>
+              <span>100 Marine Drive, Nariman Point, Mumbai 400021</span>
             </li>
             <li>
               <span class="icon">✉️</span>
-              <span>concierge&#64;hotelbookingportal.com</span>
+              <span>support&#64;hotelbookingportal.com</span>
             </li>
             <li>
               <span class="icon">📞</span>
-              <span>+91 22 4500 8800 (24x7 Luxury Helpline)</span>
+              <span>+91 22 4500 8800 (24x7 Guest Helpline)</span>
             </li>
             <li>
-              <span class="icon">🛡️</span>
-              <span>256-Bit SSL Encrypted &amp; OWASP Hardened</span>
+              <span class="icon">🕒</span>
+              <span>Mon - Sun: 24 Hours Availability</span>
             </li>
           </ul>
         </div>
@@ -61,89 +60,67 @@ import { RouterModule } from '@angular/router';
       <div class="footer-bottom">
         <div class="bottom-container">
           <p>&copy; 2026 Hotel Booking Portal. All rights reserved.</p>
-          <p class="privacy-note">Guaranteed Live Availability | Verified Guest Reviews | Secure Checkout</p>
+          <p class="privacy-note">Secure SSL 256-Bit Encrypted Transactions | Guaranteed Availability</p>
         </div>
       </div>
     </footer>
   `,
   styles: [`
     .footer-wrapper {
-      background: linear-gradient(180deg, #0a1128 0%, #060c1d 100%);
-      color: #94a3b8;
+      background-color: #0f2942;
+      color: #cbd5e1;
       padding-top: 3.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      position: relative;
-    }
-    .footer-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #2563eb, #f59e0b, transparent);
+      border-top: 3px solid #006ce4;
     }
     .footer-container {
-      max-width: 1240px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 1.5rem 3rem;
       display: grid;
-      grid-template-columns: 2fr 1.2fr 1.5fr;
-      gap: 3.5rem;
-    }
-    .footer-brand {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 3rem;
     }
     .footer-brand .brand-text {
       font-size: 1.4rem;
       color: #ffffff;
       font-weight: 600;
-      letter-spacing: -0.02em;
     }
     .footer-brand strong {
-      color: #60a5fa;
-    }
-    .brand-gold-tag {
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: #f59e0b;
-      font-weight: 700;
+      color: #006ce4;
     }
     .about-desc {
       margin-top: 1rem;
-      line-height: 1.65;
+      line-height: 1.6;
       font-size: 0.92rem;
       color: #94a3b8;
     }
     .tech-badge {
       display: inline-block;
       margin-top: 1.2rem;
-      background: rgba(37, 99, 235, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: #93c5fd;
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
+      background: rgba(0, 108, 228, 0.15);
+      border: 1px solid rgba(0, 108, 228, 0.4);
+      color: #79b5ff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 500;
     }
     .col-title {
       color: #ffffff;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       margin-bottom: 1.2rem;
       font-weight: 600;
       position: relative;
-      padding-bottom: 0.6rem;
+      padding-bottom: 0.5rem;
     }
     .col-title::after {
       content: '';
       position: absolute;
       left: 0;
       bottom: 0;
-      width: 28px;
+      width: 32px;
       height: 2px;
-      background: #2563eb;
+      background-color: #006ce4;
       border-radius: 2px;
     }
     .links ul, .contact-list {
@@ -152,15 +129,14 @@ import { RouterModule } from '@angular/router';
       margin: 0;
     }
     .links li {
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
     .links a {
       color: #cbd5e1;
       text-decoration: none;
       font-size: 0.92rem;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
+      transition: color 0.2s, transform 0.2s;
+      display: inline-block;
     }
     .links a:hover {
       color: #ffffff;
@@ -168,37 +144,32 @@ import { RouterModule } from '@angular/router';
     }
     .contact-list li {
       display: flex;
-      gap: 0.75rem;
-      margin-bottom: 0.85rem;
+      gap: 0.6rem;
+      margin-bottom: 0.8rem;
       font-size: 0.9rem;
       color: #cbd5e1;
-      align-items: flex-start;
-      line-height: 1.45;
-    }
-    .contact-list .icon {
-      font-size: 1rem;
-      flex-shrink: 0;
+      line-height: 1.4;
     }
     .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      background-color: #060c1d;
-      padding: 1.25rem 1.5rem;
+      background-color: #081a2b;
+      padding: 1.2rem 1.5rem;
       font-size: 0.85rem;
       color: #64748b;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
     .bottom-container {
-      max-width: 1240px;
+      max-width: 1200px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.8rem;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 850px) {
       .footer-container {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 2rem;
       }
       .bottom-container {
         flex-direction: column;

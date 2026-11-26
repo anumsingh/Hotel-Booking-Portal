@@ -17,19 +17,18 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
         <!-- TOP SEARCH BAR -->
         <div class="search-summary-banner">
           <div class="summary-info">
-            <span class="eyebrow">Luxury Accommodations</span>
-            <h1 class="page-title">Explore Verified Stays &amp; Resorts</h1>
+            <h1 class="page-title">Explore Hotels &amp; Resorts</h1>
             <p class="summary-sub" *ngIf="selectedLocation">
-              Showing premium stays matching <strong>"{{ selectedLocation }}"</strong>
-              <span *ngIf="checkIn && checkOut" class="dates-tag"> ({{ checkIn }} → {{ checkOut }})</span>
+              Showing hotels matching <strong>"{{ selectedLocation }}"</strong>
+              <span *ngIf="checkIn && checkOut"> for {{ checkIn }} to {{ checkOut }}</span>
             </p>
             <p class="summary-sub" *ngIf="!selectedLocation">
-              Browse our curated portfolio of heritage palaces, beachfront villas &amp; mountain chalets
-              <span *ngIf="checkIn && checkOut" class="dates-tag"> ({{ checkIn }} → {{ checkOut }})</span>
+              Browse all verified luxury stays
+              <span *ngIf="checkIn && checkOut"> for {{ checkIn }} to {{ checkOut }}</span>
             </p>
           </div>
           <div class="results-count" *ngIf="!loading">
-            <strong>{{ filteredHotels.length }}</strong> Properties Available
+            <strong>{{ filteredHotels.length }}</strong> hotels available
           </div>
         </div>
 
@@ -39,7 +38,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
             <div class="filter-card">
               <div class="filter-header">
                 <h3>Filter Results</h3>
-                <button (click)="resetFilters()" class="btn-reset">Reset All</button>
+                <button (click)="resetFilters()" class="btn-reset">Reset</button>
               </div>
 
               <!-- Location Filter -->
@@ -50,7 +49,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                     type="text" 
                     [(ngModel)]="filterLocation" 
                     (input)="applyFilters()" 
-                    placeholder="Filter by city (e.g. Udaipur, Goa)"
+                    placeholder="Search by city (e.g. Mumbai)"
                     class="filter-input"
                   />
                 </div>
@@ -64,16 +63,16 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                 </div>
                 <input 
                   type="range" 
-                  [min]="3000" 
-                  [max]="15000" 
+                  [min]="2000" 
+                  [max]="10000" 
                   [step]="500" 
                   [(ngModel)]="maxPrice" 
                   (input)="applyFilters()"
                   class="range-slider"
                 />
                 <div class="range-marks">
-                  <span>₹3,000</span>
-                  <span>₹15,000</span>
+                  <span>₹2,000</span>
+                  <span>₹10,000</span>
                 </div>
               </div>
 
@@ -81,7 +80,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               <div class="filter-section">
                 <label class="filter-label">Popular Amenities</label>
                 <div class="checkbox-group">
-                  <label *ngFor="let amenity of availableAmenities" class="checkbox-label" [class.checked]="selectedAmenities.includes(amenity)">
+                  <label *ngFor="let amenity of availableAmenities" class="checkbox-label">
                     <input 
                       type="checkbox" 
                       [value]="amenity" 
@@ -108,9 +107,9 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
 
             <!-- Empty State -->
             <div *ngIf="!loading && !errorMessage && filteredHotels.length === 0" class="empty-state">
-              <div class="empty-icon">🏰</div>
-              <h3>No Properties Found</h3>
-              <p>We couldn't find any stays matching your current filter criteria.</p>
+              <div class="empty-icon">🏨</div>
+              <h3>No Hotels Found</h3>
+              <p>We couldn't find any hotels matching your current filter criteria.</p>
               <button (click)="resetFilters()" class="btn-clear-filters">Clear All Filters</button>
             </div>
 
@@ -131,72 +130,56 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     .hotel-list-page {
       background-color: #f8fafc;
       min-height: calc(100vh - 70px);
-      padding: 2.5rem 1.5rem 5rem;
+      padding: 2rem 1.5rem 4rem;
     }
     .page-container {
-      max-width: 1240px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .search-summary-banner {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 1.75rem 2rem;
-      margin-bottom: 2.25rem;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 1.25rem;
-      box-shadow: 0 4px 20px rgba(10, 17, 40, 0.05);
-    }
-    .eyebrow {
-      font-size: 0.78rem;
-      color: #2563eb;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: block;
-      margin-bottom: 0.25rem;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(15, 41, 66, 0.05);
     }
     .page-title {
-      font-size: 1.85rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      color: #0f172a;
-      margin: 0 0 0.35rem;
-      letter-spacing: -0.02em;
+      color: #0f2942;
+      margin: 0 0 0.25rem;
     }
     .summary-sub {
       color: #64748b;
       font-size: 0.95rem;
       margin: 0;
     }
-    .dates-tag {
-      color: #2563eb;
-      font-weight: 600;
-    }
     .results-count {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #dbeafe;
-      padding: 0.55rem 1.2rem;
-      border-radius: 9999px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+      background: #ebf3ff;
+      color: #006ce4;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
     .content-layout {
       display: grid;
-      grid-template-columns: 290px 1fr;
-      gap: 2.2rem;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
       align-items: flex-start;
     }
     .filter-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 1.6rem;
-      box-shadow: 0 4px 18px rgba(10, 17, 40, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(15, 41, 66, 0.05);
       position: sticky;
       top: 90px;
     }
@@ -205,54 +188,44 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      padding-bottom: 0.85rem;
+      padding-bottom: 0.75rem;
       border-bottom: 1px solid #f1f5f9;
     }
     .filter-header h3 {
       margin: 0;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      color: #0f172a;
+      color: #0f2942;
     }
     .btn-reset {
       background: none;
       border: none;
-      color: #2563eb;
+      color: #006ce4;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      transition: color 0.2s;
-    }
-    .btn-reset:hover {
-      color: #1d4ed8;
-      text-decoration: underline;
     }
     .filter-section {
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.5rem;
     }
     .filter-label {
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #1e293b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
       margin-bottom: 0.5rem;
       display: block;
     }
     .filter-input {
       width: 100%;
-      padding: 0.75rem 0.9rem;
+      padding: 0.65rem 0.8rem;
       border: 1.5px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.9rem;
       box-sizing: border-box;
-      font-family: inherit;
-      background: #f8fafc;
-      transition: all 0.2s;
     }
     .filter-input:focus {
       outline: none;
-      border-color: #2563eb;
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      border-color: #006ce4;
     }
     .price-header {
       display: flex;
@@ -260,102 +233,78 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       align-items: center;
     }
     .price-val {
-      font-weight: 800;
-      color: #1d4ed8;
-      font-size: 0.95rem;
+      font-weight: 700;
+      color: #003580;
+      font-size: 0.9rem;
     }
     .range-slider {
       width: 100%;
-      accent-color: #2563eb;
-      margin: 0.6rem 0 0.35rem;
-      cursor: pointer;
+      accent-color: #006ce4;
+      margin: 0.5rem 0 0.25rem;
     }
     .range-marks {
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
       color: #94a3b8;
-      font-weight: 500;
     }
     .checkbox-group {
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
+      gap: 0.5rem;
     }
     .checkbox-label {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       font-size: 0.88rem;
       color: #475569;
       cursor: pointer;
-      padding: 0.35rem 0.5rem;
-      border-radius: 6px;
-      transition: background 0.15s;
-    }
-    .checkbox-label:hover {
-      background: #f1f5f9;
-    }
-    .checkbox-label.checked {
-      color: #1d4ed8;
-      font-weight: 600;
-      background: #eff6ff;
     }
     .checkbox-label input {
-      accent-color: #2563eb;
+      accent-color: #006ce4;
       cursor: pointer;
-      width: 16px;
-      height: 16px;
     }
     .hotels-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      gap: 1.8rem;
     }
     .empty-state {
       background: #ffffff;
-      border: 2px dashed #cbd5e1;
-      border-radius: 16px;
-      padding: 4.5rem 2rem;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 4rem 2rem;
       text-align: center;
     }
     .empty-icon {
-      font-size: 3.2rem;
-      margin-bottom: 1.2rem;
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
     .empty-state h3 {
-      font-size: 1.35rem;
-      color: #0f172a;
-      margin: 0 0 0.6rem;
-      font-weight: 700;
+      font-size: 1.3rem;
+      color: #0f2942;
+      margin: 0 0 0.5rem;
     }
     .empty-state p {
       color: #64748b;
-      margin: 0 0 1.6rem;
-      font-size: 0.95rem;
+      margin: 0 0 1.5rem;
     }
     .btn-clear-filters {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      background: #006ce4;
       color: #ffffff;
       border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.92rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-      transition: all 0.2s;
-    }
-    .btn-clear-filters:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
     }
     .error-box {
       background: #fef2f2;
       border: 1px solid #fecaca;
       color: #991b1b;
       padding: 1.5rem;
-      border-radius: 12px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -365,11 +314,10 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       color: #ffffff;
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
     }
-    @media (max-width: 880px) {
+    @media (max-width: 850px) {
       .content-layout {
         grid-template-columns: 1fr;
       }
@@ -390,16 +338,16 @@ export class HotelListComponent implements OnInit {
   checkOut = '';
 
   filterLocation = '';
-  maxPrice = 12000;
+  maxPrice = 10000;
   selectedAmenities: string[] = [];
 
   availableAmenities: string[] = [
     'Wi-Fi',
     'Pool',
+    'Breakfast',
+    'Beach',
+    'Mountain View',
     'Spa',
-    'Dining',
-    'Balcony',
-    'Butler',
     'Parking'
   ];
 
@@ -475,7 +423,7 @@ export class HotelListComponent implements OnInit {
 
   resetFilters(): void {
     this.filterLocation = '';
-    this.maxPrice = 12000;
+    this.maxPrice = 10000;
     this.selectedAmenities = [];
     this.applyFilters();
   }

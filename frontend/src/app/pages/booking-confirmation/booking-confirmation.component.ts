@@ -26,18 +26,18 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
           <!-- SUCCESS HEADER -->
           <div class="success-banner">
             <div class="success-icon-wrap">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </div>
-            <h1 class="success-title">Your Reservation is Confirmed!</h1>
-            <p class="success-sub">Thank you for reserving with us. Your room inventory is locked and verified in our database.</p>
+            <h1 class="success-title">Your booking has been confirmed!</h1>
+            <p class="success-sub">Thank you for booking with us. A confirmation has been stored in MySQL database.</p>
           </div>
 
           <!-- BOOKING REFERENCE BADGE -->
           <div class="reference-banner">
             <div class="reference-info">
-              <span class="ref-label">Official Booking Reference</span>
+              <span class="ref-label">Booking Reference Number</span>
               <strong class="ref-code">{{ booking.bookingReference }}</strong>
             </div>
             <div class="status-badge" [class.confirmed]="booking.bookingStatus === 'CONFIRMED'">
@@ -47,7 +47,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
 
           <!-- SUMMARY GRID -->
           <div class="details-section">
-            <h3 class="section-title">Reservation Voucher Details</h3>
+            <h3 class="section-title">Reservation Details</h3>
 
             <div class="info-grid">
               <div class="info-group">
@@ -56,17 +56,17 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               </div>
 
               <div class="info-group">
-                <span class="label">Registered Email</span>
+                <span class="label">Guest Email</span>
                 <span class="val">{{ booking.guestEmail }}</span>
               </div>
 
               <div class="info-group">
-                <span class="label">Property Name</span>
-                <span class="val hotel-name-highlight">{{ booking.hotelName }}</span>
+                <span class="label">Hotel Name</span>
+                <span class="val">{{ booking.hotelName }}</span>
               </div>
 
               <div class="info-group">
-                <span class="label">Destination</span>
+                <span class="label">Location</span>
                 <span class="val">📍 {{ booking.hotelLocation }}</span>
               </div>
 
@@ -96,7 +96,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               </div>
 
               <div class="info-group total-group">
-                <span class="label">Total Amount Verified &amp; Paid</span>
+                <span class="label">Total Amount Paid / Due</span>
                 <span class="val total-val">₹{{ booking.totalAmount | number:'1.0-0' }}</span>
               </div>
             </div>
@@ -110,15 +110,15 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                 <rect x="6" y="14" width="12" height="8"></rect>
               </svg>
-              Print / Save Voucher
+              Download / Print Confirmation
             </button>
 
             <a routerLink="/my-bookings" class="btn-action btn-retrieve">
-              Manage in My Bookings
+              View in My Bookings
             </a>
 
             <a routerLink="/" class="btn-action btn-home-link">
-              Explore More Hotels
+              Go to Home
             </a>
           </div>
         </div>
@@ -132,54 +132,47 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       padding: 3rem 1.5rem 5rem;
     }
     .confirmation-container {
-      max-width: 820px;
+      max-width: 800px;
       margin: 0 auto;
     }
     .confirmation-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 12px 36px rgba(10, 17, 40, 0.08);
+      box-shadow: 0 10px 30px rgba(15, 41, 66, 0.08);
     }
     .success-banner {
-      background: linear-gradient(135deg, #060c1d 0%, #0a1128 50%, #12234f 100%);
+      background: linear-gradient(135deg, #003580 0%, #006ce4 100%);
       color: #ffffff;
-      padding: 2.75rem 2rem;
+      padding: 2.5rem 2rem;
       text-align: center;
-      position: relative;
     }
     .success-icon-wrap {
-      width: 68px;
-      height: 68px;
-      background: rgba(16, 185, 129, 0.2);
-      border: 2px solid #10b981;
-      color: #10b981;
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       margin: 0 auto 1.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.4);
     }
     .success-title {
-      font-size: 2.1rem;
+      font-size: 2rem;
       font-weight: 800;
       margin: 0 0 0.5rem;
-      letter-spacing: -0.025em;
     }
     .success-sub {
-      color: #cbd5e1;
+      color: #ebf3ff;
       margin: 0;
       font-size: 1rem;
-      max-width: 580px;
-      margin: 0 auto;
-      line-height: 1.55;
     }
     .reference-banner {
-      background: #f8fafc;
-      border-bottom: 1px dashed #cbd5e1;
-      padding: 1.35rem 2.2rem;
+      background: #ebf3ff;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 1.25rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -188,121 +181,107 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .ref-label {
       display: block;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.06em;
+      color: #006ce4;
+      letter-spacing: 0.5px;
     }
     .ref-code {
-      font-size: 1.45rem;
-      color: #1d4ed8;
+      font-size: 1.4rem;
+      color: #003580;
       font-family: monospace;
       letter-spacing: 1px;
     }
     .status-badge {
-      padding: 0.35rem 0.9rem;
-      border-radius: 9999px;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
     .status-badge.confirmed {
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
+      background: #dcfce7;
+      color: #15803d;
     }
     .details-section {
-      padding: 2.2rem;
+      padding: 2rem;
     }
     .section-title {
       font-size: 1.2rem;
       font-weight: 700;
-      color: #0f172a;
+      color: #0f2942;
       margin: 0 0 1.5rem;
-      padding-bottom: 0.65rem;
+      padding-bottom: 0.5rem;
       border-bottom: 1px solid #f1f5f9;
-      letter-spacing: -0.01em;
     }
     .info-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.6rem;
+      gap: 1.5rem;
     }
     .info-group {
       display: flex;
       flex-direction: column;
     }
     .info-group .label {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       color: #64748b;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-weight: 600;
       margin-bottom: 0.25rem;
     }
     .info-group .val {
       font-size: 1.05rem;
       font-weight: 600;
-      color: #0f172a;
-    }
-    .hotel-name-highlight {
-      color: #1d4ed8 !important;
-      font-weight: 700 !important;
+      color: #0f2942;
     }
     .check-date {
-      color: #2563eb !important;
-      font-weight: 700 !important;
+      color: #006ce4 !important;
     }
     .total-group {
       grid-column: span 2;
       border-top: 1px solid #e2e8f0;
-      padding-top: 1.15rem;
+      padding-top: 1rem;
       margin-top: 0.5rem;
     }
     .total-val {
-      font-size: 1.65rem !important;
+      font-size: 1.6rem !important;
       font-weight: 800 !important;
-      color: #1d4ed8 !important;
+      color: #003580 !important;
     }
     .actions-bar {
       background: #f8fafc;
       border-top: 1px solid #e2e8f0;
-      padding: 1.5rem 2.2rem;
+      padding: 1.5rem 2rem;
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
-      align-items: center;
     }
     .btn-action {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.35rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.92rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
       text-decoration: none;
       cursor: pointer;
       border: none;
-      transition: all 0.2s ease;
     }
     .btn-print {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      background: #006ce4;
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
     }
     .btn-print:hover {
-      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-      transform: translateY(-1px);
+      background: #0056b3;
     }
     .btn-retrieve {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
+      background: #ebf3ff;
+      color: #006ce4;
     }
     .btn-retrieve:hover {
-      background: #dbeafe;
+      background: #d5e8ff;
     }
     .btn-home-link {
       background: #f1f5f9;
@@ -311,25 +290,23 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .btn-home-link:hover {
       background: #e2e8f0;
-      color: #0f172a;
+      color: #0f2942;
     }
     .error-card {
       background: #ffffff;
-      padding: 3.5rem 2rem;
-      border-radius: 16px;
+      padding: 3rem;
+      border-radius: 12px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(10, 17, 40, 0.06);
-      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     }
     .btn-home {
       display: inline-block;
-      margin-top: 1.25rem;
-      background: #2563eb;
+      margin-top: 1rem;
+      background: #006ce4;
       color: #ffffff;
-      padding: 0.65rem 1.35rem;
-      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
       text-decoration: none;
-      font-weight: 600;
     }
     @media print {
       .no-print {
@@ -344,7 +321,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
         background: #ffffff;
       }
     }
-    @media (max-width: 650px) {
+    @media (max-width: 600px) {
       .info-grid {
         grid-template-columns: 1fr;
       }

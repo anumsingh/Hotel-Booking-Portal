@@ -17,11 +17,9 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       <section class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <div class="hero-tag">
-            <span class="sparkle">✨</span> Handcrafted Luxury Stays &amp; Royal Escapes
-          </div>
+          <span class="hero-tag">Premium Stays &amp; Unmatched Hospitality</span>
           <h1 class="hero-title">Find Your Perfect Stay</h1>
-          <p class="hero-subtitle">Discover majestic palaces, beachfront villas, and serene mountain chalets with instant live confirmation.</p>
+          <p class="hero-subtitle">Discover comfortable hotels and book your next stay with ease.</p>
 
           <!-- SEARCH FORM -->
           <div class="search-box-card">
@@ -34,7 +32,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                   type="text" 
                   id="location" 
                   formControlName="location" 
-                  placeholder="e.g. Udaipur, Goa, Mumbai, Manali"
+                  placeholder="e.g. Mumbai, Goa, Manali, Pune"
                   class="form-control"
                 />
               </div>
@@ -72,22 +70,10 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                   </svg>
-                  Search Stays
+                  Search Hotels
                 </button>
               </div>
             </form>
-
-            <div class="quick-dest-row">
-              <span class="quick-label">Trending Destinations:</span>
-              <div class="quick-chips">
-                <button type="button" class="quick-chip" (click)="setDestination('Udaipur')">Udaipur</button>
-                <button type="button" class="quick-chip" (click)="setDestination('Goa')">Goa</button>
-                <button type="button" class="quick-chip" (click)="setDestination('Mumbai')">Mumbai</button>
-                <button type="button" class="quick-chip" (click)="setDestination('Manali')">Manali</button>
-                <button type="button" class="quick-chip" (click)="setDestination('Bengaluru')">Bengaluru</button>
-              </div>
-            </div>
-
             <div *ngIf="dateError" class="search-validation-error">
               ⚠️ {{ dateError }}
             </div>
@@ -100,15 +86,12 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
         <div class="section-container">
           <div class="section-header">
             <div>
-              <span class="section-sub">Curated Selection</span>
-              <h2 class="section-title">Featured Luxury Properties</h2>
+              <span class="section-sub">Hand-Picked Recommendations</span>
+              <h2 class="section-title">Featured Luxury Hotels</h2>
             </div>
             <a routerLink="/hotels" class="link-view-all">
-              <span>View All Properties ({{ featuredHotels.length }})</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+              View All Hotels ({{ featuredHotels.length }})
+              <span>&rarr;</span>
             </a>
           </div>
 
@@ -118,7 +101,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
           <!-- Error Alert -->
           <div *ngIf="errorMessage && !loading" class="error-banner">
             <p>{{ errorMessage }}</p>
-            <button (click)="loadFeaturedHotels()" class="btn-retry">Retry Connection</button>
+            <button (click)="loadFeaturedHotels()" class="btn-retry">Retry</button>
           </div>
 
           <!-- Hotel Grid -->
@@ -136,49 +119,49 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       <section class="why-us-section">
         <div class="section-container">
           <div class="why-header text-center">
-            <span class="section-sub">The Gold Standard</span>
-            <h2 class="section-title">Why Reserve with Us</h2>
-            <p class="why-desc">Experience frictionless travel with verified hotel inventory, transparent billing, and instant room reservations.</p>
+            <span class="section-sub">Unmatched Trust &amp; Convenience</span>
+            <h2 class="section-title">Why Choose Hotel Booking Portal</h2>
+            <p class="why-desc">We combine direct backend hotel availability, transparent pricing, and instant confirmations.</p>
           </div>
 
           <div class="features-grid">
             <div class="feature-card">
-              <div class="feature-icon-wrap icon-blue">
+              <div class="feature-icon-wrap">
                 <span class="feature-icon">⚡</span>
               </div>
-              <h3 class="feature-title">Instant Live Booking</h3>
+              <h3 class="feature-title">Easy Booking</h3>
               <p class="feature-text">
-                Real-time synchronized inventory checks directly with our backend database. No waiting or unconfirmed vouchers.
+                Intuitive search, live room availability checks, and streamlined two-click confirmations without cumbersome steps.
               </p>
             </div>
 
             <div class="feature-card">
-              <div class="feature-icon-wrap icon-gold">
-                <span class="feature-icon">👑</span>
-              </div>
-              <h3 class="feature-title">Verified Luxury Stays</h3>
-              <p class="feature-text">
-                Every property features verified room capacities, high-resolution photography, authentic amenities, and prime locations.
-              </p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon-wrap icon-emerald">
-                <span class="feature-icon">💎</span>
-              </div>
-              <h3 class="feature-title">Zero Hidden Fees</h3>
-              <p class="feature-text">
-                All prices calculated strictly using server-side decimal math. Complete breakdown of nights, room rates, and totals upfront.
-              </p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon-wrap icon-rose">
+              <div class="feature-icon-wrap">
                 <span class="feature-icon">🛡️</span>
               </div>
-              <h3 class="feature-title">Secure Cancellation</h3>
+              <h3 class="feature-title">Verified Hotel Information</h3>
               <p class="feature-text">
-                Plans shift? Look up your reservation using reference &amp; email, then cancel securely with single-use cryptographic verification.
+                Every hotel details its verified room capacity, high-resolution photographs, authentic amenities, and exact location.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrap">
+                <span class="feature-icon">💰</span>
+              </div>
+              <h3 class="feature-title">Transparent Pricing</h3>
+              <p class="feature-text">
+                All pricing is calculated by the backend using strict decimal math. What you see is what you pay—no surprise hidden fees.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrap">
+                <span class="feature-icon">🔄</span>
+              </div>
+              <h3 class="feature-title">Easy Cancellation</h3>
+              <p class="feature-text">
+                Plans change? Cancel any active confirmed booking instantly using your booking reference and email, immediately releasing your room.
               </p>
             </div>
           </div>
@@ -192,14 +175,14 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .hero-section {
       position: relative;
-      background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80');
+      background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
-      background-position: center 40%;
-      min-height: 560px;
+      background-position: center 35%;
+      min-height: 520px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4.5rem 1.5rem;
+      padding: 4rem 1.5rem;
     }
     .hero-overlay {
       position: absolute;
@@ -207,64 +190,55 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(180deg, rgba(6, 12, 29, 0.82) 0%, rgba(10, 17, 40, 0.88) 100%);
+      background: linear-gradient(180deg, rgba(15, 41, 66, 0.78) 0%, rgba(0, 53, 128, 0.85) 100%);
     }
     .hero-content {
       position: relative;
       z-index: 10;
-      max-width: 1080px;
+      max-width: 1050px;
       width: 100%;
       text-align: center;
       color: #ffffff;
     }
     .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
-      color: #f8fafc;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(4px);
+      color: #ebf3ff;
       font-size: 0.85rem;
       font-weight: 600;
-      padding: 0.45rem 1.1rem;
-      border-radius: 9999px;
-      margin-bottom: 1.3rem;
-      letter-spacing: 0.04em;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    .sparkle {
-      color: #f59e0b;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
     .hero-title {
-      font-size: 3.25rem;
+      font-size: 3rem;
       font-weight: 800;
-      margin: 0 0 0.85rem;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      margin: 0 0 0.8rem;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
     .hero-subtitle {
-      font-size: 1.18rem;
+      font-size: 1.2rem;
       font-weight: 400;
-      color: #e2e8f0;
-      max-width: 680px;
-      margin: 0 auto 2.8rem;
-      line-height: 1.6;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      color: #e2eeff;
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.5;
     }
     .search-box-card {
       background: #ffffff;
-      border-radius: 20px;
-      padding: 1.5rem 1.75rem;
-      box-shadow: 0 20px 45px rgba(6, 12, 29, 0.3);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
       text-align: left;
-      border: 1px solid rgba(255, 255, 255, 0.8);
     }
     .search-form {
       display: grid;
       grid-template-columns: 2fr 1.3fr 1.3fr 1.4fr;
-      gap: 1.1rem;
+      gap: 1rem;
       align-items: flex-end;
     }
     .form-group {
@@ -272,38 +246,36 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       flex-direction: column;
     }
     .form-group label {
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 0.45rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 0.4rem;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.3rem;
     }
     .form-control {
       width: 100%;
-      padding: 0.82rem 1rem;
+      padding: 0.75rem 0.9rem;
       border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 0.95rem;
-      color: #0f172a;
-      background: #f8fafc;
+      color: #0f2942;
+      background: #ffffff;
       box-sizing: border-box;
-      transition: all 0.2s ease;
-      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     .form-control:focus {
       outline: none;
-      background: #ffffff;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      border-color: #006ce4;
+      box-shadow: 0 0 0 3px rgba(0, 108, 228, 0.15);
     }
     .btn-search {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      background: #006ce4;
       color: #ffffff;
       border: none;
-      border-radius: 10px;
-      padding: 0.85rem 1.4rem;
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
@@ -311,121 +283,76 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      transition: all 0.25s ease;
-      height: 49px;
+      transition: background 0.2s, transform 0.15s;
+      height: 47px;
     }
     .btn-search:hover {
-      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+      background: #0056b3;
       transform: translateY(-1px);
     }
-    .quick-dest-row {
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      padding-top: 0.85rem;
-      border-top: 1px solid #f1f5f9;
-    }
-    .quick-label {
-      font-size: 0.78rem;
-      color: #64748b;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .quick-chips {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .quick-chip {
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      border: 1px solid #e2e8f0;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .quick-chip:hover {
-      background: #eff6ff;
-      color: #2563eb;
-      border-color: #bfdbfe;
-    }
     .search-validation-error {
-      margin-top: 0.85rem;
+      margin-top: 0.75rem;
       color: #dc2626;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.6rem;
       background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 8px;
+      border-radius: 6px;
     }
     .featured-section {
-      padding: 5rem 1.5rem;
-      max-width: 1240px;
+      padding: 4.5rem 1.5rem;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.2rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
     .section-sub {
-      color: #2563eb;
-      font-size: 0.82rem;
+      color: #006ce4;
+      font-size: 0.85rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 1px;
       display: block;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
     }
     .section-title {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 800;
-      color: #0f172a;
+      color: #0f2942;
       margin: 0;
-      letter-spacing: -0.025em;
+      letter-spacing: -0.5px;
     }
     .link-view-all {
-      color: #2563eb;
-      font-weight: 700;
+      color: #006ce4;
+      font-weight: 600;
       text-decoration: none;
       font-size: 0.95rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.9rem;
-      border-radius: 8px;
-      background: #eff6ff;
-      border: 1px solid #dbeafe;
-      transition: all 0.2s ease;
+      gap: 0.4rem;
+      transition: gap 0.2s;
     }
     .link-view-all:hover {
-      background: #dbeafe;
-      color: #1d4ed8;
-      transform: translateX(2px);
+      gap: 0.7rem;
+      color: #003580;
     }
     .hotels-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.8rem;
     }
     .error-banner {
       background: #fef2f2;
       border: 1px solid #fecaca;
       color: #991b1b;
-      padding: 1.25rem 1.5rem;
-      border-radius: 12px;
+      padding: 1.2rem;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -434,18 +361,17 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       background: #991b1b;
       color: #ffffff;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
       cursor: pointer;
     }
     .why-us-section {
       background: #ffffff;
-      padding: 5.5rem 1.5rem;
+      padding: 5rem 1.5rem;
       border-top: 1px solid #e2e8f0;
     }
     .section-container {
-      max-width: 1240px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .text-center {
@@ -453,73 +379,56 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .why-desc {
       color: #64748b;
-      font-size: 1.08rem;
-      max-width: 650px;
-      margin: 0.75rem auto 3.25rem;
-      line-height: 1.6;
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0.6rem auto 3rem;
     }
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2.2rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
     }
     .feature-card {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 2.2rem 1.75rem;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
       text-align: center;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .feature-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 30px rgba(10, 17, 40, 0.08);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(15, 41, 66, 0.08);
       border-color: #cbd5e1;
     }
     .feature-icon-wrap {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1.35rem;
-      border-radius: 16px;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.25rem;
+      background: #ebf3ff;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .icon-blue {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-    }
-    .icon-gold {
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-    }
-    .icon-emerald {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-    }
-    .icon-rose {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-    }
     .feature-icon {
-      font-size: 1.85rem;
+      font-size: 1.8rem;
     }
     .feature-title {
-      font-size: 1.18rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: #0f172a;
-      margin: 0 0 0.65rem;
-      letter-spacing: -0.01em;
+      color: #0f2942;
+      margin: 0 0 0.6rem;
     }
     .feature-text {
       color: #64748b;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       line-height: 1.6;
       margin: 0;
     }
     @media (max-width: 900px) {
       .hero-title {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
       }
       .search-form {
         grid-template-columns: 1fr;
@@ -579,10 +488,6 @@ export class HomeComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  setDestination(city: string): void {
-    this.searchForm.patchValue({ location: city });
   }
 
   onCheckInChange(): void {

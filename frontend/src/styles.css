@@ -1,69 +1,13 @@
 /* ============================================================
-   Hotel Booking Portal Global Styling & Design Tokens
-   Luxury Travel Aesthetic: Midnight Sapphire & Warm Gold
+   Hotel Booking Portal Global Styling
+   Color Palette:
+   - Primary Navy Blue: #003580, #0f2942, #081a2b
+   - Accent Light Blue: #006ce4, #0056b3, #ebf3ff
+   - Neutral Whites/Grays: #ffffff, #f8fafc, #f1f5f9, #cbd5e1, #64748b
+   - Semantic: Success (#059669, #ecfdf5), Error (#dc2626, #fef2f2)
    ============================================================ */
 
-:root {
-  /* Color Palette */
-  --navy-950: #060c1d;
-  --navy-900: #0a1128;
-  --navy-850: #0d1a3a;
-  --navy-800: #12234f;
-  --navy-700: #1c326e;
-  
-  --brand-primary: #1d4ed8;
-  --brand-accent: #2563eb;
-  --brand-hover: #1e40af;
-  --brand-light: #eff6ff;
-  --brand-subtle: #dbeafe;
-  
-  --gold-600: #b45309;
-  --gold-500: #d97706;
-  --gold-400: #f59e0b;
-  --gold-light: #fffbeb;
-  --gold-border: #fde68a;
-  
-  --emerald-600: #059669;
-  --emerald-500: #10b981;
-  --emerald-50: #ecfdf5;
-  --emerald-border: #a7f3d0;
-  
-  --rose-600: #e11d48;
-  --rose-500: #f43f5e;
-  --rose-50: #fff1f2;
-  --rose-border: #fecdd3;
-  
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-300: #cbd5e1;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-600: #475569;
-  --slate-700: #334155;
-  --slate-800: #1e293b;
-  --slate-900: #0f172a;
-  
-  /* Elevation & Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 12px 28px -4px rgba(15, 23, 42, 0.12);
-  --shadow-xl: 0 24px 48px -8px rgba(15, 23, 42, 0.16);
-  
-  /* Border Radius */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
-  --radius-full: 9999px;
-  
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* Global styles */
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -74,66 +18,40 @@
 html, body {
   height: 100%;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--slate-800);
-  background-color: var(--slate-50);
-  line-height: 1.55;
+  color: #1e293b;
+  background-color: #f8fafc;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  color: var(--brand-accent);
+  color: #006ce4;
   text-decoration: none;
-  transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--brand-hover);
+  text-decoration: underline;
 }
 
 button {
   font-family: inherit;
-  border: none;
-  cursor: pointer;
 }
 
 /* Custom modern scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--slate-100);
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--slate-300);
-  border-radius: var(--radius-full);
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--slate-400);
-}
-
-/* Utility Badges & Tags */
-.badge-gold {
-  background: var(--gold-light);
-  color: var(--gold-600);
-  border: 1px solid var(--gold-border);
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
-}
-
-.badge-emerald {
-  background: var(--emerald-50);
-  color: var(--emerald-600);
-  border: 1px solid var(--emerald-border);
-  font-weight: 700;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
+  background: #94a3b8;
 }
 
 /* Global Print Stylesheet */
