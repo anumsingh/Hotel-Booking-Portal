@@ -403,17 +403,17 @@ npm test -- --watch=false --browsers=ChromeHeadless
 
 ## 12. Screenshots
 
-| Home Page | Hotel Listing & Filters |
+| Home Page | Hotel Search & Filters |
 |:---:|:---:|
-| ![Home Page](screenshots/home_page.png) | ![Hotel Listing](screenshots/hotel_listing.png) |
+| ![Home Page](screenshots/home_page.png) | ![Hotel Search](screenshots/HotelSearch.png) |
 
-| Hotel Details & Live Availability | Booking Form & Summary |
+| Booking Form & Price Summary | Booking Confirmation Voucher |
 |:---:|:---:|
-| ![Hotel Details](screenshots/hotel_details.png) | ![Booking Form](screenshots/booking_form.png) |
+| ![Booking Form](screenshots/Booking-Form.png) | ![Confirmation](screenshots/Booking-Confirmation.png) |
 
-| Booking Confirmation Voucher | Retrieve & Cancel Booking |
+| Secure Booking Lookup | Booking Cancellation & Refund |
 |:---:|:---:|
-| ![Confirmation](screenshots/booking_confirmation.png) | ![My Bookings](screenshots/my_bookings.png) |
+| ![Retrieve Booking](screenshots/Retrieve-BookingData.png) | ![Cancellation](screenshots/Boooking-cancellation.png) |
 
 ---
 
