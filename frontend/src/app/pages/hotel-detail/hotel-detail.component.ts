@@ -40,8 +40,8 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
             <h1 class="hotel-title">{{ hotel.name }}</h1>
           </div>
           <div class="rating-box">
-            <span class="rating-score">4.9 / 5.0</span>
-            <span class="review-count">Verified Guest Reviews</span>
+            <span class="rating-score">★ 4.9 / 5.0</span>
+            <span class="review-count">Verified Luxury Reviews</span>
           </div>
         </div>
 
@@ -212,7 +212,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                   (click)="proceedToBooking()"
                   class="btn-book-now"
                   [class.disabled]="!availability.isAvailable">
-                  {{ availability.isAvailable ? 'Book Now' : 'Room Unavailable' }}
+                  {{ availability.isAvailable ? 'Reserve Now' : 'Room Unavailable' }}
                 </button>
               </div>
 
@@ -230,166 +230,188 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     .hotel-detail-page {
       background-color: #f8fafc;
       min-height: calc(100vh - 70px);
-      padding: 2rem 1.5rem 5rem;
+      padding: 2.5rem 1.5rem 5rem;
     }
     .detail-container {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
     }
     .breadcrumb {
       font-size: 0.88rem;
       color: #64748b;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
     .breadcrumb a {
-      color: #006ce4;
+      color: #2563eb;
       text-decoration: none;
+      font-weight: 500;
     }
     .hotel-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 1.25rem;
     }
     .location-pill {
-      display: inline-block;
-      background: #ebf3ff;
-      color: #006ce4;
-      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #dbeafe;
+      font-size: 0.84rem;
       font-weight: 600;
-      padding: 0.3rem 0.75rem;
-      border-radius: 20px;
-      margin-bottom: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      margin-bottom: 0.6rem;
     }
     .hotel-title {
-      font-size: 2.2rem;
+      font-size: 2.35rem;
       font-weight: 800;
-      color: #0f2942;
+      color: #0f172a;
       margin: 0;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
     }
     .rating-box {
       text-align: right;
     }
     .rating-score {
-      display: block;
-      background: #003580;
-      color: #ffffff;
+      display: inline-block;
+      background: linear-gradient(135deg, #0a1128 0%, #1e293b 100%);
+      color: #f59e0b;
       font-weight: 800;
-      font-size: 1.1rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 8px;
+      font-size: 1.15rem;
+      padding: 0.45rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: 0 4px 12px rgba(10, 17, 40, 0.15);
     }
     .review-count {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: #64748b;
-      margin-top: 0.25rem;
+      margin-top: 0.35rem;
       display: block;
+      font-weight: 500;
     }
     .gallery-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 1rem;
-      margin-bottom: 2.5rem;
-      height: 420px;
-      border-radius: 14px;
+      margin-bottom: 2.75rem;
+      height: 440px;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 4px 16px rgba(15, 41, 66, 0.08);
+      box-shadow: 0 10px 30px rgba(10, 17, 40, 0.08);
+      border: 1px solid #e2e8f0;
     }
     .main-image {
       height: 100%;
       overflow: hidden;
-      background: #f1f5f9;
+      background: #0a1128;
     }
     .main-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-grid:hover .main-image img {
+      transform: scale(1.02);
     }
     .sub-images {
       display: grid;
       grid-template-rows: repeat(3, 1fr);
-      gap: 0.8rem;
+      gap: 0.75rem;
       height: 100%;
     }
     .sub-img-wrap {
       overflow: hidden;
-      background: #f1f5f9;
-      border-radius: 8px;
+      background: #0a1128;
+      border-radius: 10px;
     }
     .sub-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s;
+      transition: transform 0.35s ease;
     }
     .sub-img-wrap:hover img {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
     .detail-grid {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 390px;
       gap: 2.5rem;
       align-items: flex-start;
     }
     .section-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 1.75rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 8px rgba(15, 41, 66, 0.04);
+      border-radius: 16px;
+      padding: 1.85rem;
+      margin-bottom: 1.6rem;
+      box-shadow: 0 4px 18px rgba(10, 17, 40, 0.04);
     }
     .room-category-card {
-      border-left: 4px solid #006ce4;
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(135deg, #ffffff 0%, #fffdf5 100%);
     }
     .room-cat-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .cat-label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       font-weight: 700;
-      color: #006ce4;
-      letter-spacing: 0.5px;
+      color: #b45309;
+      letter-spacing: 0.08em;
     }
     .room-title {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 700;
-      color: #0f2942;
-      margin: 0.2rem 0 0;
+      color: #0f172a;
+      margin: 0.25rem 0 0;
+      letter-spacing: -0.015em;
     }
     .room-capacity-badge {
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 0.85rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 0.82rem;
       padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      border-radius: 9999px;
+      font-weight: 600;
     }
     .room-rate {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 800;
-      color: #003580;
-      margin: 0.5rem 0 0;
+      color: #0f172a;
+      margin: 0.6rem 0 0;
     }
     .rate-currency {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+      color: #1d4ed8;
+      margin-right: 2px;
     }
     .rate-period {
       font-size: 0.9rem;
-      font-weight: 400;
+      font-weight: 500;
       color: #64748b;
     }
     .card-heading {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #0f2942;
+      color: #0f172a;
       margin: 0 0 1rem;
+      letter-spacing: -0.01em;
     }
     .hotel-desc {
       color: #475569;
@@ -399,40 +421,51 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .amenities-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 0.8rem;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 0.85rem;
     }
     .amenity-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       color: #334155;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
+      font-weight: 500;
     }
     .check-icon {
       color: #059669;
       font-weight: 800;
+      background: #ecfdf5;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
     }
     .alternatives-section {
       background: #fffdf5;
       border: 1.5px solid #fde68a;
+      border-radius: 16px;
     }
     .no-rooms-alert {
       display: flex;
-      gap: 0.8rem;
+      gap: 0.85rem;
       background: #fef2f2;
       border: 1px solid #fecaca;
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 1.1rem;
+      border-radius: 10px;
       margin-bottom: 1.5rem;
     }
     .alert-icon {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
     }
     .alert-title {
       margin: 0 0 0.25rem;
       color: #991b1b;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
     }
     .alert-text {
@@ -440,37 +473,47 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       color: #7f1d1d;
       font-size: 0.88rem;
     }
+    .alt-header {
+      margin-bottom: 1.25rem;
+    }
     .alt-tag {
-      background: #dbeafe;
-      color: #1e40af;
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 0.25rem 0.6rem;
-      border-radius: 4px;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
     }
     .alt-title {
       font-size: 1.35rem;
       font-weight: 800;
-      color: #0f2942;
-      margin: 0.4rem 0 0.25rem;
+      color: #0f172a;
+      margin: 0.5rem 0 0.25rem;
+      letter-spacing: -0.015em;
     }
     .alt-desc {
       color: #64748b;
-      font-size: 0.9rem;
-      margin: 0 0 1.25rem;
+      font-size: 0.92rem;
+      margin: 0;
     }
     .alternatives-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.2rem;
+      gap: 1.25rem;
     }
     .alt-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(10, 17, 40, 0.06);
+      transition: transform 0.2s ease;
+    }
+    .alt-card:hover {
+      transform: translateY(-3px);
     }
     .alt-img {
       width: 100%;
@@ -478,7 +521,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       object-fit: cover;
     }
     .alt-info {
-      padding: 1rem;
+      padding: 1.1rem;
     }
     .alt-city {
       font-size: 0.75rem;
@@ -486,9 +529,9 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       font-weight: 600;
     }
     .alt-name {
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       font-weight: 700;
-      color: #0f2942;
+      color: #0f172a;
       margin: 0.25rem 0;
     }
     .alt-room-cat {
@@ -503,37 +546,43 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       color: #065f46;
       font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.25rem 0.5rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 4px;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.65rem;
     }
     .alt-price {
       font-size: 0.95rem;
-      color: #003580;
-      margin-bottom: 0.8rem;
+      color: #0f172a;
+      margin-bottom: 0.85rem;
+    }
+    .alt-price strong {
+      color: #1d4ed8;
+      font-size: 1.15rem;
     }
     .btn-alt-book {
       width: 100%;
-      background: #006ce4;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: #ffffff;
       border: none;
-      border-radius: 6px;
-      padding: 0.55rem;
-      font-weight: 600;
-      font-size: 0.85rem;
+      border-radius: 8px;
+      padding: 0.65rem;
+      font-weight: 700;
+      font-size: 0.88rem;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s;
     }
     .btn-alt-book:hover {
-      background: #0056b3;
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
     }
     .no-alt-box {
       background: #f1f5f9;
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 1.25rem;
+      border-radius: 10px;
       text-align: center;
       color: #64748b;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
     .booking-sidebar {
       position: sticky;
@@ -542,72 +591,86 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     .booking-card {
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 16px rgba(15, 41, 66, 0.08);
+      border-radius: 16px;
+      padding: 1.65rem;
+      box-shadow: 0 8px 30px rgba(10, 17, 40, 0.08);
     }
     .booking-card-header {
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 1.35rem;
+      padding-bottom: 0.85rem;
       border-bottom: 1px solid #f1f5f9;
     }
     .booking-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #0f2942;
+      color: #0f172a;
       margin: 0 0 0.2rem;
+      letter-spacing: -0.01em;
     }
     .booking-sub {
       color: #64748b;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       margin: 0;
     }
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.1rem;
     }
     .form-group label {
       display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 0.3rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.35rem;
     }
     .form-control {
       width: 100%;
-      padding: 0.65rem 0.8rem;
+      padding: 0.75rem 0.9rem;
       border: 1.5px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
       box-sizing: border-box;
+      font-family: inherit;
+      background: #f8fafc;
+      transition: all 0.2s;
     }
     .form-control:focus {
       outline: none;
-      border-color: #006ce4;
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
     .validation-msg {
       background: #fef2f2;
       color: #dc2626;
-      padding: 0.6rem;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      margin-top: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 1rem 0;
+      border: 1px solid #fecaca;
+    }
+    .availability-status {
+      margin-top: 1.25rem;
     }
     .status-indicator {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.65rem 0.9rem;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 0.88rem;
       margin: 1rem 0;
+      font-weight: 600;
     }
     .status-indicator.available {
       background: #ecfdf5;
       color: #065f46;
+      border: 1px solid #a7f3d0;
     }
     .status-indicator.unavailable {
       background: #fef2f2;
       color: #991b1b;
+      border: 1px solid #fecaca;
     }
     .status-dot {
       width: 8px;
@@ -618,27 +681,27 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     .calculation-summary {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.25rem;
+      border-radius: 12px;
+      padding: 1.15rem;
+      margin-bottom: 1.35rem;
     }
     .calc-row {
       display: flex;
       justify-content: space-between;
       font-size: 0.88rem;
       color: #475569;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.55rem;
     }
     .calc-row.total-row {
       border-top: 1px solid #cbd5e1;
-      padding-top: 0.6rem;
-      margin-top: 0.6rem;
-      color: #0f2942;
-      font-size: 1rem;
+      padding-top: 0.75rem;
+      margin-top: 0.75rem;
+      color: #0f172a;
+      font-size: 1.05rem;
     }
     .total-price {
-      color: #003580;
-      font-size: 1.3rem;
+      color: #1d4ed8;
+      font-size: 1.45rem;
       font-weight: 800;
     }
     .tax-note {
@@ -649,22 +712,25 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .btn-book-now {
       width: 100%;
-      background: #006ce4;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 0.9rem;
-      font-size: 1rem;
+      border-radius: 10px;
+      padding: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      transition: all 0.25s ease;
     }
     .btn-book-now:hover:not(.disabled) {
-      background: #0056b3;
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
       transform: translateY(-1px);
     }
     .btn-book-now.disabled {
       background: #94a3b8;
+      box-shadow: none;
       cursor: not-allowed;
     }
     .checking-state {
@@ -679,34 +745,34 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     .mini-spinner {
       width: 16px;
       height: 16px;
-      border: 2px solid #e2e8f0;
-      border-top-color: #006ce4;
+      border: 2px solid #cbd5e1;
+      border-top-color: #2563eb;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin {
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
     .error-container {
-      max-width: 600px;
-      margin: 4rem auto;
-      text-align: center;
       background: #ffffff;
       padding: 3rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border-radius: 16px;
+      text-align: center;
+      max-width: 600px;
+      margin: 2rem auto;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(10, 17, 40, 0.05);
     }
     .btn-back {
       display: inline-block;
       margin-top: 1rem;
-      background: #006ce4;
+      background: #2563eb;
       color: #ffffff;
-      text-decoration: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
       font-weight: 600;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
       .gallery-grid {
         grid-template-columns: 1fr;
         height: auto;

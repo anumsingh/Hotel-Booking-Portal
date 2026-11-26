@@ -15,9 +15,9 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       <div class="page-container">
         <!-- HEADER -->
         <div class="page-header text-center">
-          <span class="header-tag">Manage Reservations</span>
-          <h1 class="page-title">Retrieve Your Booking</h1>
-          <p class="page-sub">Enter your unique booking reference and guest email address to view or cancel your stay.</p>
+          <span class="header-tag">🔒 256-Bit Encrypted Secure Lookup</span>
+          <h1 class="page-title">Manage Your Reservations</h1>
+          <p class="page-sub">Enter your unique booking reference and guest email address to review stay details or process an instant cancellation.</p>
         </div>
 
         <!-- SEARCH / RETRIEVE FORM CARD -->
@@ -32,7 +32,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                   type="text" 
                   id="bookingRef" 
                   formControlName="reference" 
-                  placeholder="e.g. THB-20261123-50A1E3"
+                  placeholder="e.g. THB-20261126-A1B2C3"
                   class="form-control"
                   [class.is-invalid]="retrieveForm.get('reference')?.invalid && retrieveForm.get('reference')?.touched"
                 />
@@ -67,7 +67,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                 class="btn-retrieve"
                 [class.disabled]="retrieveForm.invalid || loading">
                 <span *ngIf="!loading">Retrieve Booking</span>
-                <span *ngIf="loading">Searching Database...</span>
+                <span *ngIf="loading">Verifying with Server...</span>
               </button>
             </div>
           </form>
@@ -89,7 +89,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
         <div *ngIf="booking" class="booking-details-card">
           <div class="details-header">
             <div>
-              <span class="ref-sub">Booking Reference</span>
+              <span class="ref-sub">Verified Reservation</span>
               <h2 class="ref-heading">{{ booking.bookingReference }}</h2>
             </div>
             <div class="status-pill" [class.confirmed]="booking.bookingStatus === 'CONFIRMED'" [class.cancelled]="booking.bookingStatus === 'CANCELLED'">
@@ -102,7 +102,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               <div class="hotel-info">
                 <span class="city-badge">📍 {{ booking.hotelLocation }}</span>
                 <h3 class="hotel-name">{{ booking.hotelName }}</h3>
-                <span class="room-name">Category: {{ booking.roomName }}</span>
+                <span class="room-name">Reserved Suite: {{ booking.roomName }}</span>
               </div>
             </div>
 
@@ -112,7 +112,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                 <span class="row-val">{{ booking.guestName }}</span>
               </div>
               <div class="table-row">
-                <span class="row-label">Email Address:</span>
+                <span class="row-label">Registered Email:</span>
                 <span class="row-val">{{ booking.guestEmail }}</span>
               </div>
               <div class="table-row">
@@ -124,11 +124,11 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
                 <span class="row-val highlight">{{ booking.checkOutDate }}</span>
               </div>
               <div class="table-row">
-                <span class="row-label">Number of Nights:</span>
-                <span class="row-val">{{ booking.numberOfNights }}</span>
+                <span class="row-label">Duration of Stay:</span>
+                <span class="row-val">{{ booking.numberOfNights }} Night{{ booking.numberOfNights > 1 ? 's' : '' }}</span>
               </div>
               <div class="table-row">
-                <span class="row-label">Rate Per Night:</span>
+                <span class="row-label">Nightly Room Rate:</span>
                 <span class="row-val">₹{{ booking.pricePerNight | number:'1.0-0' }}</span>
               </div>
               <div class="table-row total-row">
@@ -137,45 +137,42 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
               </div>
             </div>
 
-            <!-- CANCELLATION BUTTON & MODAL -->
-            <div class="cancellation-action-area">
-              <div *ngIf="booking.bookingStatus === 'CONFIRMED'">
-                <p class="cancel-note">Need to cancel this reservation? Cancellation will immediately release the room capacity.</p>
-                <button (click)="openCancelModal()" class="btn-cancel-booking">
-                  Cancel This Booking
-                </button>
-              </div>
+            <!-- Cancellation Section (Only if status is CONFIRMED) -->
+            <div *ngIf="booking.bookingStatus === 'CONFIRMED'" class="cancellation-action-area">
+              <p class="cancel-note">Need to alter your plans? Cancellations are instant and immediately release room inventory.</p>
+              <button (click)="openCancelModal()" class="btn-cancel-booking">
+                Cancel This Reservation
+              </button>
+            </div>
 
-              <div *ngIf="booking.bookingStatus === 'CANCELLED'" class="cancelled-notice">
-                <span class="icon">ℹ️</span>
-                <span>This booking was cancelled. The reserved room has been released back into available inventory.</span>
-              </div>
+            <!-- Cancelled Notice (If status is CANCELLED) -->
+            <div *ngIf="booking.bookingStatus === 'CANCELLED'" class="cancelled-notice">
+              <span>⚠️ This reservation has been cancelled and room inventory has been released.</span>
             </div>
           </div>
         </div>
 
-        <!-- CONFIRMATION MODAL -->
+        <!-- CANCEL CONFIRMATION MODAL -->
         <div *ngIf="showCancelModal" class="modal-backdrop">
           <div class="modal-dialog">
             <div class="modal-header">
               <h3 class="modal-title">Confirm Cancellation</h3>
-              <button (click)="closeCancelModal()" class="btn-close">&times;</button>
+              <button (click)="closeCancelModal()" class="btn-close" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-body">
               <div class="warning-icon">⚠️</div>
               <p>Are you sure you want to cancel booking <strong>{{ booking?.bookingReference }}</strong>?</p>
-              <p class="modal-sub">This action cannot be undone. The reserved room will be instantly released for other guests.</p>
+              <p class="modal-sub">This action cannot be undone and your room reservation at {{ booking?.hotelName }} will be cancelled.</p>
             </div>
             <div class="modal-footer">
-              <button (click)="closeCancelModal()" [disabled]="cancelling" class="btn-modal-cancel">Keep Booking</button>
-              <button (click)="confirmCancellation()" [disabled]="cancelling" class="btn-modal-confirm">
-                <span *ngIf="!cancelling">Yes, Cancel Reservation</span>
+              <button (click)="closeCancelModal()" class="btn-modal-cancel" [disabled]="cancelling">Keep Booking</button>
+              <button (click)="confirmCancellation()" class="btn-modal-confirm" [disabled]="cancelling">
+                <span *ngIf="!cancelling">Confirm Cancellation</span>
                 <span *ngIf="cancelling">Cancelling...</span>
               </button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   `,
@@ -189,70 +186,77 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       max-width: 820px;
       margin: 0 auto;
     }
+    .page-header {
+      margin-bottom: 2.25rem;
+    }
     .text-center {
       text-align: center;
     }
     .header-tag {
-      background: #ebf3ff;
-      color: #006ce4;
-      font-size: 0.82rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 0.8rem;
       font-weight: 700;
-      padding: 0.35rem 0.85rem;
-      border-radius: 20px;
+      padding: 0.35rem 0.95rem;
+      border-radius: 9999px;
       display: inline-block;
-      margin-bottom: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.04em;
     }
     .page-title {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: 800;
-      color: #0f2942;
+      color: #0f172a;
       margin: 0 0 0.5rem;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.025em;
     }
     .page-sub {
       color: #64748b;
-      margin: 0 0 2rem;
+      margin: 0;
       font-size: 1rem;
+      line-height: 1.6;
     }
     .card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 2rem;
-      box-shadow: 0 4px 16px rgba(15, 41, 66, 0.06);
-      margin-bottom: 2rem;
+      border-radius: 18px;
+      padding: 2.25rem;
+      box-shadow: 0 4px 20px rgba(10, 17, 40, 0.05);
+      margin-bottom: 2.25rem;
     }
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      margin-bottom: 1.5rem;
+      gap: 1.4rem;
+      margin-bottom: 1.6rem;
     }
     .form-group label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 0.4rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.45rem;
     }
     .required {
       color: #dc2626;
     }
     .form-control {
       width: 100%;
-      padding: 0.75rem 0.9rem;
+      padding: 0.82rem 1rem;
       border: 1.5px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 0.95rem;
+      background: #f8fafc;
       box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+      transition: all 0.2s ease;
     }
     .form-control:focus {
       outline: none;
-      border-color: #006ce4;
-      box-shadow: 0 0 0 3px rgba(0, 108, 228, 0.15);
+      background: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
     .form-control.is-invalid {
       border-color: #dc2626;
@@ -260,64 +264,69 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .field-error {
       color: #dc2626;
-      font-size: 0.8rem;
-      margin-top: 0.3rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      margin-top: 0.35rem;
+      font-weight: 600;
     }
     .btn-retrieve {
-      background: #006ce4;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 0.85rem 1.8rem;
+      border-radius: 10px;
+      padding: 0.9rem 2rem;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      transition: all 0.25s ease;
     }
     .btn-retrieve:hover:not(.disabled) {
-      background: #0056b3;
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+      transform: translateY(-1px);
     }
     .btn-retrieve.disabled {
       background: #94a3b8;
+      box-shadow: none;
       cursor: not-allowed;
     }
     .error-banner {
       background: #fef2f2;
       border: 1px solid #fecaca;
       color: #991b1b;
-      padding: 0.9rem 1.2rem;
-      border-radius: 8px;
-      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-top: 1.35rem;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       font-size: 0.92rem;
+      font-weight: 600;
     }
     .success-banner {
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
       color: #065f46;
-      padding: 0.9rem 1.2rem;
-      border-radius: 8px;
-      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-top: 1.35rem;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       font-size: 0.92rem;
       font-weight: 600;
     }
     .booking-details-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 6px 20px rgba(15, 41, 66, 0.08);
+      box-shadow: 0 10px 30px rgba(10, 17, 40, 0.08);
     }
     .details-header {
-      background: #003580;
+      background: linear-gradient(135deg, #060c1d 0%, #0a1128 50%, #12234f 100%);
       color: #ffffff;
-      padding: 1.5rem 2rem;
+      padding: 1.75rem 2.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -325,66 +334,70 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       gap: 1rem;
     }
     .ref-sub {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #79b5ff;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      font-weight: 600;
     }
     .ref-heading {
-      margin: 0.2rem 0 0;
-      font-size: 1.6rem;
+      margin: 0.25rem 0 0;
+      font-size: 1.65rem;
       font-family: monospace;
       letter-spacing: 1px;
     }
     .status-pill {
-      padding: 0.35rem 0.85rem;
-      border-radius: 20px;
+      padding: 0.4rem 0.95rem;
+      border-radius: 9999px;
       font-size: 0.85rem;
       font-weight: 700;
     }
     .status-pill.confirmed {
-      background: #dcfce7;
-      color: #15803d;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
     }
     .status-pill.cancelled {
-      background: #fee2e2;
+      background: #fff1f2;
       color: #b91c1c;
+      border: 1px solid #fecdd3;
     }
     .details-body {
-      padding: 2rem;
+      padding: 2.25rem;
     }
     .hotel-summary-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      padding: 1.35rem;
+      margin-bottom: 1.6rem;
     }
     .city-badge {
-      font-size: 0.8rem;
-      color: #006ce4;
-      font-weight: 600;
+      font-size: 0.78rem;
+      color: #1d4ed8;
+      font-weight: 700;
     }
     .hotel-name {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      color: #0f2942;
-      margin: 0.25rem 0;
+      color: #0f172a;
+      margin: 0.3rem 0;
     }
     .room-name {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: #64748b;
+      font-weight: 500;
     }
     .info-table {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
-      margin-bottom: 2rem;
+      gap: 0.85rem;
+      margin-bottom: 2.25rem;
     }
     .table-row {
       display: flex;
       justify-content: space-between;
-      padding-bottom: 0.6rem;
+      padding-bottom: 0.7rem;
       border-bottom: 1px solid #f1f5f9;
       font-size: 0.95rem;
     }
@@ -393,46 +406,50 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .row-val {
       font-weight: 600;
-      color: #0f2942;
+      color: #0f172a;
     }
     .row-val.highlight {
-      color: #006ce4;
+      color: #2563eb;
+      font-weight: 700;
     }
     .table-row.total-row {
       border-top: 1px solid #cbd5e1;
-      padding-top: 0.8rem;
-      margin-top: 0.5rem;
+      padding-top: 0.9rem;
+      margin-top: 0.6rem;
     }
     .total-price {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      color: #003580;
+      color: #1d4ed8;
     }
     .cancellation-action-area {
       background: #fff8f8;
-      border: 1px dashed #fca5a5;
-      padding: 1.5rem;
-      border-radius: 10px;
+      border: 1.5px dashed #fca5a5;
+      padding: 1.6rem;
+      border-radius: 12px;
       text-align: center;
     }
     .cancel-note {
       color: #7f1d1d;
-      font-size: 0.9rem;
-      margin: 0 0 1rem;
+      font-size: 0.92rem;
+      margin: 0 0 1.1rem;
+      line-height: 1.5;
     }
     .btn-cancel-booking {
       background: #dc2626;
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      padding: 0.8rem 1.6rem;
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      transition: all 0.2s ease;
     }
     .btn-cancel-booking:hover {
       background: #b91c1c;
+      transform: translateY(-1px);
     }
     .cancelled-notice {
       display: flex;
@@ -440,8 +457,12 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       justify-content: center;
       gap: 0.6rem;
       color: #991b1b;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
       font-weight: 600;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      padding: 1rem;
+      border-radius: 10px;
     }
     .modal-backdrop {
       position: fixed;
@@ -449,8 +470,8 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(15, 41, 66, 0.5);
-      backdrop-filter: blur(4px);
+      background: rgba(6, 12, 29, 0.65);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -459,14 +480,14 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .modal-dialog {
       background: #ffffff;
-      border-radius: 14px;
-      max-width: 480px;
+      border-radius: 18px;
+      max-width: 490px;
       width: 100%;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
     }
     .modal-header {
-      padding: 1.25rem 1.5rem;
+      padding: 1.35rem 1.6rem;
       border-bottom: 1px solid #f1f5f9;
       display: flex;
       justify-content: space-between;
@@ -474,48 +495,49 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
     }
     .modal-title {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #0f2942;
+      color: #0f172a;
     }
     .btn-close {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: #94a3b8;
       cursor: pointer;
     }
     .modal-body {
-      padding: 1.75rem;
+      padding: 1.85rem;
       text-align: center;
     }
     .warning-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
+      font-size: 2.8rem;
+      margin-bottom: 0.85rem;
     }
     .modal-body p {
       margin: 0 0 0.5rem;
-      font-size: 1rem;
-      color: #0f2942;
+      font-size: 1.02rem;
+      color: #0f172a;
     }
     .modal-sub {
       font-size: 0.88rem !important;
       color: #64748b !important;
+      line-height: 1.5;
     }
     .modal-footer {
-      padding: 1.25rem 1.5rem;
+      padding: 1.35rem 1.6rem;
       background: #f8fafc;
       border-top: 1px solid #e2e8f0;
       display: flex;
       justify-content: flex-end;
-      gap: 0.8rem;
+      gap: 0.85rem;
     }
     .btn-modal-cancel {
       background: #e2e8f0;
       color: #334155;
       border: none;
-      padding: 0.65rem 1.1rem;
-      border-radius: 6px;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
     }
@@ -523,10 +545,11 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
       background: #dc2626;
       color: #ffffff;
       border: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: 6px;
+      padding: 0.7rem 1.35rem;
+      border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
     }
     @media (max-width: 600px) {
       .form-grid {
